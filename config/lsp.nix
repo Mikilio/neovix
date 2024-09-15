@@ -1,7 +1,6 @@
 {
   lib,
   pkgs,
-  helpers,
   ...
 }:
 {
@@ -51,11 +50,8 @@
         "meson_options.txt"
         "meson.options"
       ];
-      callback =
-        let
-          settings = { };
-        in
-        helpers.mkRaw ''
+      callback.__raw = # lua
+        ''
           function(args)
             local match = vim.fs.find(
               {"meson_options.txt", "meson.options", ".git"},
@@ -66,7 +62,6 @@
               name = "mesonlsp",
               cmd = {"${lib.getExe pkgs.mesonlsp}", "--lsp"},
               root_dir = root_dir,
-              settings = ${helpers.toLuaObject settings},
             })
           end
         '';
@@ -127,11 +122,11 @@
         html = {
           formatter = [
             "prettier"
-            (helpers.mkRaw "djlint_fmt")
+            {__raw = "djlint_fmt";}
           ];
         };
         htmldjango = {
-          formatter = [ (helpers.mkRaw "djlint_fmt") ];
+          formatter.__raw = "djlint_fmt";
           linter = "djlint";
         };
         json = {

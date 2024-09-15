@@ -1,7 +1,6 @@
 # This file contains plugins that are basics or don't need their own file
-{ pkgs, inputs, mkKey, ... }:
+{ pkgs, inputs,  ... }:
 let
-  inherit (mkKey) mkKeymap ;
   mkPkgs = name: src: pkgs.vimUtils.buildVimPlugin { inherit name src; };
 
   # ePlugins are the plugins that are not available in nixpkgs/nixvim coming from flakes

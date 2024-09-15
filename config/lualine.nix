@@ -1,4 +1,4 @@
-{ icons, ... }:
+{  ... }:
 {
   plugins = {
     navic = {

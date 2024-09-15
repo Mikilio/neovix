@@ -1,3 +1,4 @@
+{ ... }:
 {
   plugins = {
     persistence.enable = true;

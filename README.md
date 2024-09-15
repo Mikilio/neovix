@@ -13,5 +13,3 @@ life.
 
 The setup was inspired by really all configurations featured on NixVim.
 The base for the repo structure was niksingh710/nvix.
-
-

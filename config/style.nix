@@ -1,12 +1,8 @@
 {
-  config,
-  pkgs,
-  mkKey,
   lib,
   ...
 }:
 let
-  inherit (mkKey) mkKeymap;
   rainbow = [
     "rainbowcol1"
     "rainbowcol2"

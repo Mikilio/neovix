@@ -1,4 +1,4 @@
-{ icons, ... }: {
+{ ... }: {
   plugins.dashboard = {
     # TODO: search for fix when free
     enable = true;
@@ -19,7 +19,7 @@
             action = { __raw = "function() require('persistence').load() end";};
           }
           {
-            desc = "${icons.ui.Files} Find Files";
+            desc = "";
             group = "DiagnosticHint";
             key = "f";
             action = "Telescope find_files";
@@ -31,7 +31,7 @@
             action = "Telescope live_grep";
           }
           {
-            desc = "${icons.ui.BoldClose} Quit";
+            desc = "";
             group = "DiagnosticError";
             key = "q";
             action = "qa";

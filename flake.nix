@@ -15,11 +15,6 @@
       perSystem =
         { system, ... }:
         let
-          opts = {
-            border = "rounded";
-            transparent = "true"; # into string so that can be passed in lua code
-          };
-
           pkgs = import inputs.nixpkgs {
             config.allowUnfree = true;
             inherit system;
@@ -32,8 +27,8 @@
             # You can use `extraSpecialArgs` to pass additional arguments to your module files
             extraSpecialArgs = {
               # inherit (inputs) foo;
-              inherit inputs opts;
-            } // import ./lib;
+              inherit inputs;
+            };
           };
           nvim = nixvim'.makeNixvimWithModule nixvimModule;
         in
@@ -51,10 +46,25 @@
       flake =
         builtins.mapAttrs
           (name: value: {
-            default = {
-              imports = [ value ];
-              config.programs.nixvim = import ./config;
-            };
+            default =
+              { ... }:
+              {
+                imports = [
+                  value.default
+                  (
+                    {
+                      pkgs,
+                      lib,
+                      ...
+                    }:
+                    {
+                      config.programs.nixvim = lib.mkMerge (
+                        map (mod: import mod { inherit inputs pkgs lib; }) (import ./config).imports
+                      );
+                    }
+                  )
+                ];
+              };
           })
           {
             inherit (nixvim) homeManagerModules nixosModules nixDarwinModules;

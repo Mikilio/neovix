@@ -4,6 +4,16 @@
     nix-develop.enable = true;
     direnv.enable = true;
     dap.enable = true;
+    markdown-preview = {
+      enable = true;
+      settings = {
+        auto_start = true;
+        combine_preview = true;
+        browserfunc = "OpenMarkdownPreview";
+        echo_preview_url = true;
+        page_title = "Markdown Preview";
+      };
+    };
     qmk = {
       enable = true;
       settings.layout = [
@@ -27,6 +37,14 @@
     };
     yazi.enable = true;
   };
+
+  extraConfigVim = # vimscript
+    ''
+        function OpenMarkdownPreview (url)
+          execute "silent ! floorp --new-window " . a:url
+        endfunction
+    '';
+
   keymaps = [
     {
       key = "<leader>ya";

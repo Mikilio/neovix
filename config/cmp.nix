@@ -1,4 +1,4 @@
-{ opts, ... }:
+{  ... }:
 {
   highlightOverride = {
     PMenu = {
@@ -25,11 +25,11 @@
       settings = {
         window = {
           completion = {
-            border = "${opts.border}";
+            border = "rounded";
             scrollbar = false;
           };
           documentation = {
-            border = "${opts.border}";
+            border = "rounded";
           };
           snippet.expand.__raw = # lua
             ''
