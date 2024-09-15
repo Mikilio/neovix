@@ -7,7 +7,8 @@
     markdown-preview = {
       enable = true;
       settings = {
-        auto_start = true;
+        auto_start = false;
+        auto_close = false;
         combine_preview = true;
         browserfunc = "OpenMarkdownPreview";
         echo_preview_url = true;
@@ -41,7 +42,7 @@
   extraConfigVim = # vimscript
     ''
         function OpenMarkdownPreview (url)
-          execute "silent ! floorp --new-window " . a:url
+          execute "silent ! floorp -P PWA --new-window " . a:url
         endfunction
     '';
 

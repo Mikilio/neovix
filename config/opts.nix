@@ -42,7 +42,7 @@
     conceallevel = 2;
 
     undofile = true;
-    sessionoptions = "tabpages,folds,globals,curdir,blank";
+    sessionoptions = "tabpages,folds,globals,blank,winsize";
 
     wrap = false;
 
@@ -60,9 +60,5 @@
     winwidth = 20;
     winminwidth = 20;
     equalalways = false;
-  };
-
-  plugins.lazy = {
-    enable = true;
   };
 }
