@@ -58,18 +58,5 @@
         '';
       };
     }
-    {
-      desc = "Save session";
-      event = [ "BufWinLeave" ];
-      pattern = [ "*.*" ];
-      command = "mkview";
-    }
-    {
-      desc = "Load session";
-      event = [ "BufWinEnter" ];
-      pattern = [ "*.*" ];
-      command = "silent! loadview";
-    }
-
   ];
 }
