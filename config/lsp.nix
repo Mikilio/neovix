@@ -122,7 +122,7 @@
         html = {
           formatter = [
             "prettier"
-            {__raw = "djlint_fmt";}
+            { __raw = "djlint_fmt"; }
           ];
         };
         htmldjango = {
@@ -299,12 +299,6 @@
         lemminx.enable = true;
         ltex = {
           enable = true;
-          onAttach.function = ''
-            require("ltex_extra").setup{
-              load_langs = { "en-US", "de-DE" },
-              path = ".ltex",
-            }
-          '';
           filetypes = [
             "bib"
             "gitcommit"
@@ -320,6 +314,18 @@
           ];
         };
       };
+    };
+
+    ltex-extra = {
+      enable = true;
+      settings = {
+        load_langs = [
+          "en-US"
+          "de-DE"
+        ];
+        path = ".ltex";
+      };
+
     };
 
     rustaceanvim = {
