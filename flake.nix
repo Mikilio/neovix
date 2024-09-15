@@ -45,12 +45,14 @@
             default = nvim;
           };
         };
+      flake = {
+        inherit (nixvim) homeManagerModules nixosModules nixDarwinModules;
+      };
     };
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixvim.url = "github:nix-community/nixvim";
-    flake-parts.url = "github:hercules-ci/flake-parts";
 
     windows = {
       url = "github:anuvyklack/windows.nvim";
