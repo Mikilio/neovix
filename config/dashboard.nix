@@ -19,7 +19,7 @@
             action = { __raw = "function() require('persistence').load() end";};
           }
           {
-            desc = "";
+            desc = " Find file";
             group = "DiagnosticHint";
             key = "f";
             action = "Telescope find_files";

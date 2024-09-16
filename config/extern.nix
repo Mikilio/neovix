@@ -26,4 +26,5 @@ in {
     '';
 
   extraPlugins = nPlugins ++ ePlugins;
+  extraPackages = with pkgs; [ universal-ctags curl gzip coreutils util-linux codeium ];
 }

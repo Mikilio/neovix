@@ -1,6 +1,7 @@
 { ... }:
 {
   keymaps = [
+    # Integrations
     {
       action = {
         __raw = "function() require('yazi').yazi() end";
@@ -10,6 +11,11 @@
       options = {
         desc = "Open Yazi";
       };
+    }
+    {
+      key = "<leader>mp";
+      action = ":MarkdownPreviewToggle<CR>";
+      options.desc = "Toggle Markdown Preview";
     }
     {
       action = {
@@ -26,6 +32,8 @@
         noremap = true;
       };
     }
+
+    # Flash
     {
       action = {
         __raw = "function() require('flash').treesitter() end";
@@ -77,6 +85,8 @@
         noremap = true;
       };
     }
+
+    #Git
     {
       action = "<cmd>lua require 'gitsigns'.next_hunk()<cr>";
       key = "]g";
@@ -227,6 +237,8 @@
         silent = true;
       };
     }
+    
+    # Telescope
     {
       action = "<cmd>Telescope diagnostics theme=ivy<cr>";
       key = "<leader>td";
@@ -427,26 +439,8 @@
         silent = true;
       };
     }
-    {
-      action = "<esc>:m .+1<cr>==gi";
-      key = "<a-j>";
-      mode = "i";
-      options = {
-        desc = "Move Line Down";
-        noremap = true;
-        silent = true;
-      };
-    }
-    {
-      action = "<esc>:m .-2<cr>==gi";
-      key = "<a-k>";
-      mode = "i";
-      options = {
-        desc = "Move Line Up";
-        noremap = true;
-        silent = true;
-      };
-    }
+
+    #Smart Splits
     {
       action = {
         __raw = "function() require('smart-splits').resize_left() end";
@@ -543,6 +537,8 @@
         silent = true;
       };
     }
+
+    # Window Management
     {
       action = "<C-W>J";
       key = "<C-S-Down>";
@@ -673,16 +669,8 @@
         silent = true;
       };
     }
-    {
-      action = ":Explore<CR>";
-      key = "<leader>ex";
-      mode = "n";
-      options = {
-        desc = "Open Netrw";
-        noremap = true;
-        silent = true;
-      };
-    }
+
+    # Misc
     {
       action = "<cmd>m .+1<cr>==";
       key = "<s-Down>";

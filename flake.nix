@@ -75,6 +75,11 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixvim.url = "github:nix-community/nixvim";
 
+    codeium = {
+      url = "github:Exafunction/codeium.nvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     windows = {
       url = "github:anuvyklack/windows.nvim";
       flake = false;

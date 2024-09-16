@@ -284,8 +284,6 @@
         bashls.enable = true;
         dartls.enable = true;
         clangd.enable = true;
-        # TODO: re-enable when fixed
-        typst-lsp.enable = false;
         tsserver.enable = true;
         efm.extraOptions = {
           init_options = {

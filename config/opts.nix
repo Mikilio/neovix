@@ -42,7 +42,6 @@
     conceallevel = 2;
 
     undofile = true;
-    sessionoptions = "tabpages,folds,globals,blank,winsize";
 
     wrap = false;
 
