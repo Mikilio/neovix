@@ -7,9 +7,10 @@
     markdown-preview = {
       enable = true;
       settings = {
-        auto_start = false;
         auto_close = false;
+        command_for_global = true;
         combine_preview = true;
+        combine_preview_auto_refresh = true;
         browserfunc = "OpenMarkdownPreview";
         echo_preview_url = true;
         page_title = "Markdown Preview";
@@ -36,13 +37,21 @@
         localSettings = { ".*" = { takeover = "never"; }; };
       };
     };
+    vimtex = {
+      enable = true;
+      settings = {
+        complete_enabled = false;
+        parser_bib_backend = "lua";
+        view_method = "sioyek";
+      };
+    };
     yazi.enable = true;
   };
 
   extraConfigVim = # vimscript
     ''
         function OpenMarkdownPreview (url)
-          execute "silent ! floorp -P PWA --new-window " . a:url
+          call jobstart(['hyprctl', 'dispatch', 'exec', '[noinitialfocus\; tile]', '--', 'floorp', '-P', 'PWA', a:url] )
         endfunction
     '';
 
@@ -51,6 +60,11 @@
       key = "<leader>ya";
       action.__raw = "function() require('yazi').yazi() end";
       options.desc = "Open Yazi";
+    }
+    {
+      key = "<leader>mp";
+      action = ":MarkdownPreviewToggle<CR>";
+      options.desc = "Toggle Markdown Preview";
     }
   ];
 }

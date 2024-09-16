@@ -10,7 +10,7 @@ let
     (mkPkgs "windows-a" inputs.windows-a)
   ];
   # nPlugins are normally available in nixpkgs
-  nPlugins = with pkgs.vimPlugins; [ telescope-zoxide];
+  nPlugins = with pkgs.vimPlugins; [ telescope-zoxide vim-gutentags];
 
 in {
   # Keeping this at top so that if any plugin is removed it's respective config can be removed
