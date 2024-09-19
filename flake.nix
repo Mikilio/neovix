@@ -80,6 +80,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    git-dashboard = {
+      url = "github:juansalvatore/git-dashboard-nvim";
+      flake = false;
+    };
+
     windows = {
       url = "github:anuvyklack/windows.nvim";
       flake = false;

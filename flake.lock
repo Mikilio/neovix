@@ -129,6 +129,22 @@
         "type": "github"
       }
     },
+    "git-dashboard": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1719605384,
+        "narHash": "sha256-DiYU1Gthevxekcn55cHlM5cH3t15DQ8Wd23xmI3TOXI=",
+        "owner": "juansalvatore",
+        "repo": "git-dashboard-nvim",
+        "rev": "e44e44e2dc9c85a90ff3756eb216cf346dc9306d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "juansalvatore",
+        "repo": "git-dashboard-nvim",
+        "type": "github"
+      }
+    },
     "git-hooks": {
       "inputs": {
         "flake-compat": [
@@ -319,6 +335,7 @@
       "inputs": {
         "codeium": "codeium",
         "flake-parts": "flake-parts",
+        "git-dashboard": "git-dashboard",
         "nixpkgs": "nixpkgs",
         "nixvim": "nixvim",
         "windows": "windows",

@@ -8,6 +8,7 @@ let
     (mkPkgs "windows" inputs.windows)
     (mkPkgs "windows-mc" inputs.windows-mc)
     (mkPkgs "windows-a" inputs.windows-a)
+    (mkPkgs "git-dashboard-nvim" inputs.git-dashboard)
   ];
   # nPlugins are normally available in nixpkgs
   nPlugins = with pkgs.vimPlugins; [ telescope-zoxide vim-gutentags];

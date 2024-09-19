@@ -1,4 +1,4 @@
-{ ...}:
+{ ... }:
 {
   autoCmd = [
     {
@@ -41,6 +41,20 @@
           end
         '';
       };
+    }
+
+    {
+      desc = "Do not save session for special";
+      event = [ "FileType" ];
+      pattern = [
+        "gitcommit"
+      ];
+      callback.__raw = # lua
+        ''
+           function()
+            require("persistence").stop()
+          end
+        '';
     }
 
     {
