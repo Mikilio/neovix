@@ -72,5 +72,19 @@
         '';
       };
     }
+
+    {
+      desc = "Disable Bufferlines for Firenvim";
+      event = "UIEnter";
+      callback.__raw = # lua
+        ''
+          function(event)
+              local client = vim.api.nvim_get_chan_info(vim.v.event.chan).client
+              if client ~= nil and client.name == "Firenvim" then
+                  require('lualine').hide()
+              end
+          end
+        '';
+    }
   ];
 }

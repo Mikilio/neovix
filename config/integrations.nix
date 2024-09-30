@@ -49,6 +49,13 @@
     };
     firenvim = {
       enable = true;
+      settings = {
+        globalSettings = {
+          cmdline = "none";
+          content = "text";
+          takeover = "once";
+        };
+      };
     };
     vimtex = {
       enable = true;
