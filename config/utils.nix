@@ -2,7 +2,7 @@
 {
   plugins = {
     persistence.enable = true;
-    surround.enable = true;
+    nvim-surround.enable = true;
     which-key.enable = true;
     ts-context-commentstring.enable = true;
     flash = {

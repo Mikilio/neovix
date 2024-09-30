@@ -1,5 +1,6 @@
 { ... }:
 {
+  plugins.smart-splits.enable = true;
   keymaps = [
     # Integrations
     {

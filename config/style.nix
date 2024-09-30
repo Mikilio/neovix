@@ -93,6 +93,7 @@ in
 
     neoscroll.enable = true;
     todo-comments.enable = true;
+    web-devicons.enable = true;
   };
 
   extraConfigLuaPost = # lua

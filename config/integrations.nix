@@ -1,4 +1,9 @@
-{ lib, pkgs, inputs, ... }:
+{
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
 {
   plugins = {
     nix-develop.enable = true;
@@ -6,6 +11,10 @@
     dap.enable = true;
     codeium-nvim = {
       enable = true;
+      package = pkgs.vimUtils.buildVimPlugin {
+        name = "codeium-nvim";
+        src = inputs.codeium;
+      };
       settings = {
 
         enable_chat = true;
@@ -40,20 +49,6 @@
     };
     firenvim = {
       enable = true;
-      settings = {
-        globalSettings = {
-          cmdline = "neovim";
-          content = "text";
-          priority = 0;
-          selector = "textarea";
-          takeover = "never";
-        };
-        localSettings = {
-          ".*" = {
-            takeover = "never";
-          };
-        };
-      };
     };
     vimtex = {
       enable = true;
