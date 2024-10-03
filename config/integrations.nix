@@ -10,7 +10,8 @@
     direnv.enable = true;
     dap.enable = true;
     codeium-nvim = {
-      enable = true;
+      #it works like shit
+      enable = false;
       package = pkgs.vimUtils.buildVimPlugin {
         name = "codeium-nvim";
         src = inputs.codeium;
