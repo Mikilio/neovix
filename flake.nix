@@ -97,5 +97,9 @@
       url = "github:anuvyklack/animation.nvim";
       flake = false;
     };
+    smart-splits = {
+      url = "github:Mikilio/smart-splits.nvim";
+      flake = false;
+    };
   };
 }

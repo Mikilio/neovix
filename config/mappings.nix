@@ -1,6 +1,12 @@
-{ ... }:
+{ pkgs, inputs, ... }:
 {
-  plugins.smart-splits.enable = true;
+  plugins.smart-splits = {
+    enable = true;
+    package  = pkgs.vimUtils.buildVimPlugin {
+        name = "smart-splits";
+        src = inputs.smart-splits;
+      };
+  };
   keymaps = [
     # Integrations
     {

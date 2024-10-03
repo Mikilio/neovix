@@ -338,9 +338,26 @@
         "git-dashboard": "git-dashboard",
         "nixpkgs": "nixpkgs",
         "nixvim": "nixvim",
+        "smart-splits": "smart-splits",
         "windows": "windows",
         "windows-a": "windows-a",
         "windows-mc": "windows-mc"
+      }
+    },
+    "smart-splits": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1727990729,
+        "narHash": "sha256-7RYLV38OVfePy7PBCoZKhoh75DQ/x5ZOTdrLr2rqFII=",
+        "owner": "Mikilio",
+        "repo": "smart-splits.nvim",
+        "rev": "c9d8a84c4a1348f1c0ab3f5fef83cd3fb5211941",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mikilio",
+        "repo": "smart-splits.nvim",
+        "type": "github"
       }
     },
     "systems": {
