@@ -69,6 +69,13 @@
   ];
 
   plugins = {
+    blink-cmp = {
+      enable = true;
+      settings = {
+        keymap.preset = "super-tab";
+      };
+    };
+
     treesitter = {
       enable = true;
       nixvimInjections = true;
@@ -284,7 +291,7 @@
         bashls.enable = true;
         dartls.enable = true;
         clangd.enable = true;
-        ts-ls.enable = true;
+        ts_ls.enable = true;
         efm.extraOptions = {
           init_options = {
             documentFormatting = true;

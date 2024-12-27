@@ -9,23 +9,50 @@
     nix-develop.enable = true;
     direnv.enable = true;
     dap.enable = true;
-    codeium-nvim = {
-      #it works like shit
-      enable = false;
-      package = pkgs.vimUtils.buildVimPlugin {
-        name = "codeium-nvim";
-        src = inputs.codeium;
-      };
+    codecompanion = {
+      enable = true;
       settings = {
-
-        enable_chat = true;
-        tools = {
-          curl = lib.getExe pkgs.curl;
-          gzip = lib.getExe pkgs.gzip;
-          uname = lib.getExe' pkgs.coreutils "uname";
-          uuidgen = lib.getExe' pkgs.util-linux "uuidgen";
-          language_server = lib.getExe' inputs.codeium.packages.${pkgs.system}.codeium-lsp "codeium-lsp";
+        display.action_palette.provider = "telescope";
+        adapters = {
+          ollama = {
+            __raw = ''
+              function()
+                return require('codecompanion.adapters').extend('ollama', {
+                    env = {
+                        url = "http://127.0.0.1:11434",
+                    },
+                    schema = {
+                        model = {
+                            default = 'qwen2.5-coder:latest',
+                            -- default = "codellama:7b",
+                        },
+                        num_ctx = {
+                            default = 32768,
+                        },
+                    },
+                })
+              end
+            '';
+          };
         };
+        opts = {
+          log_level = "TRACE";
+          send_code = true;
+          use_default_actions = true;
+          use_default_prompts = true;
+        };
+        strategies = {
+          agent = {
+            adapter = "ollama";
+          };
+          chat = {
+            adapter = "ollama";
+          };
+          inline = {
+            adapter = "ollama";
+          };
+        };
+
       };
     };
     markdown-preview = {

@@ -11,7 +11,6 @@
         labels = "arstgmneioqwfpbjluyxdcvzkh";
         rainbow.enabled = true;
         modes = {
-          search.enabled = true;
           char = {
             jump_labels = true;
             char_actions = # lua

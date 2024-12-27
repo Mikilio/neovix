@@ -75,26 +75,8 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixvim.url = "github:nix-community/nixvim";
 
-    codeium = {
-      url = "github:Exafunction/codeium.nvim";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    git-dashboard = {
-      url = "github:juansalvatore/git-dashboard-nvim";
-      flake = false;
-    };
-
-    windows = {
-      url = "github:anuvyklack/windows.nvim";
-      flake = false;
-    };
-    windows-mc = {
-      url = "github:anuvyklack/middleclass";
-      flake = false;
-    };
-    windows-a = {
-      url = "github:anuvyklack/animation.nvim";
+    focus = {
+      url = "github:nvim-focus/focus.nvim";
       flake = false;
     };
   };

@@ -12,7 +12,6 @@
 
     ./dashboard.nix
     ./lsp.nix
-    ./cmp.nix
 
     ./utils.nix
     ./integrations.nix

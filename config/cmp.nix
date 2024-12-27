@@ -12,9 +12,6 @@
     luasnip.enable = true;
     lspkind = {
       enable = true;
-      symbolMap = {
-        Codeium = " ";
-      };
       cmp = {
         enable = true;
         maxWidth = 80;
@@ -95,7 +92,6 @@
             name = "buffer";
             keyword_length = 2;
           }
-          { name = "Codeium"; }
         ];
       };
     };

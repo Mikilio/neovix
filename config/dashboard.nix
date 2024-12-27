@@ -38,7 +38,7 @@
         {
           type = "terminal";
           command = "${lib.getExe pkgs.lolcat} -t -F 0.2 -S 42 -p 8 ${../assets/neovim.cat}";
-          width = 58;
+          width = 60;
           height = 8;
           opts = {
             redraw = true;

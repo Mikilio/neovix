@@ -34,6 +34,56 @@
       };
     }
 
+    {
+      key = "<C-a>";
+      mode = "n";
+      action = "<cmd>CodeCompanionActions<cr>";
+      options = {
+        noremap = true;
+        silent = true;
+      };
+    }
+
+    {
+      key = "<C-a>";
+      mode = "v";
+      action = "<cmd>CodeCompanionActions<cr>";
+      options = {
+        noremap = true;
+        silent = true;
+      };
+    }
+
+    {
+      key = "<leader>a";
+      mode = "n";
+      action = "<cmd>CodeCompanionChat Toggle<cr>";
+      options = {
+        noremap = true;
+        silent = true;
+      };
+    }
+
+    {
+      key = "<leader>a";
+      mode = "v";
+      action = "<cmd>CodeCompanionChat Toggle<cr>";
+      options = {
+        noremap = true;
+        silent = true;
+      };
+    }
+
+    {
+      key = "ga";
+      mode = "v";
+      action = "<cmd>CodeCompanionChat Add<cr>";
+      options = {
+        noremap = true;
+        silent = true;
+      };
+    }
+
     # Flash
     {
       action = {
@@ -238,7 +288,7 @@
         silent = true;
       };
     }
-    
+
     # Telescope
     {
       action = "<cmd>Telescope diagnostics theme=ivy<cr>";
