@@ -32,29 +32,6 @@ in
           inc_rename = true;
           lsp_doc_border = true;
         };
-
-        notify.view = "mini";
-      };
-    };
-
-    colorizer = {
-      enable = true;
-      settings.user_default_options = {
-        RGB = true;
-        RRGGBB = true;
-        names = true;
-        RRGGBBAA = true;
-        AARRGGBB = true;
-        rgb_fn = true;
-        hsl_fn = true;
-        css = true;
-        css_fn = true;
-        mode = "background";
-        tailwind = true;
-        sass = {
-          enable = true;
-        }; # fff
-        virtualtext = "■";
       };
     };
 
@@ -93,7 +70,23 @@ in
       highlight = rainbow;
     };
 
-    neoscroll.enable = true;
+    snacks = {
+      enable = true;
+      settings = {
+        bigfile.enabled = true;
+        input.enabled = true;
+        notifier = {
+          enabled = true;
+          timeout = 3500;
+        };
+        quickfile.enabled = true;
+        statuscolumn.enabled = true;
+        words.enabled = true;
+        scroll.enabled = true;
+      };
+    };
+
+    colorizer.enable = true;
     todo-comments.enable = true;
     web-devicons.enable = true;
   };

@@ -75,6 +75,11 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixvim.url = "github:nix-community/nixvim";
 
+    blink.url = "github:/saghen/blink.cmp";
+    fenix = {
+      url = "github:nix-community/fenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     focus = {
       url = "github:nvim-focus/focus.nvim";
       flake = false;

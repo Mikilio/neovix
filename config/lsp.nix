@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  inputs,
   ...
 }:
 {
@@ -71,6 +72,7 @@
   plugins = {
     blink-cmp = {
       enable = true;
+      package = inputs.blink.packages.${pkgs.stdenv.system}.default;
       settings = {
         keymap.preset = "super-tab";
       };

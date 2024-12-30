@@ -1,4 +1,3 @@
-# This file contains plugins that are basics or don't need their own file
 { pkgs, inputs, ... }:
 let
   mkPkgs = name: src: pkgs.vimUtils.buildVimPlugin { inherit name src; };
@@ -34,5 +33,9 @@ in
     gzip
     coreutils
     util-linux
+    biber
+    lldb
+    inputs.fenix.packages.${pkgs.stdenv.system}.complete.toolchain
+    cargo-nextest
   ];
 }

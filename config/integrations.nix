@@ -8,11 +8,10 @@
   plugins = {
     nix-develop.enable = true;
     direnv.enable = true;
-    dap.enable = true;
+
     codecompanion = {
       enable = true;
       settings = {
-        display.action_palette.provider = "telescope";
         adapters = {
           ollama = {
             __raw = ''
@@ -24,7 +23,7 @@
                     schema = {
                         model = {
                             default = 'qwen2.5-coder:latest',
-                            -- default = "codellama:7b",
+                            -- default = "llama3.1:8b-instruct-q8_0",
                         },
                         num_ctx = {
                             default = 32768,
@@ -52,8 +51,11 @@
             adapter = "ollama";
           };
         };
-
       };
+    };
+    dap = {
+      enable = true;
+      extensions.dap-python.enable = true;
     };
     markdown-preview = {
       enable = true;

@@ -49,6 +49,7 @@
     fileencoding = "utf-8";
     list = true;
     smoothscroll = true;
+    scrolloff=2;
     fillchars = {
       eob = " ";
     };
