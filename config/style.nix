@@ -95,6 +95,22 @@ in
     ''
       local hooks = require "ibl.hooks"
       hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_extmark)
+
+      local colors = require('base16-colorscheme').colors
+
+      vim.api.nvim_set_hl(0, 'Normal', {
+        fg = colors.base05,
+        bg = none,
+        ctermfg = colors.cterm05,
+        ctermbg = none,
+      })
+          
+      vim.api.nvim_set_hl(0, 'NormalNC', {
+        fg = colors.base05,
+        bg = colors.base01,
+        ctermfg = colors.cterm05,
+        ctermbg = colors.cterm01,
+      })
     '';
 
   # these optons are to be overriden by stylix

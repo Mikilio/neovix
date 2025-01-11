@@ -22,7 +22,7 @@ in
           },
           ui = {
               hybridnumber = true,
-              winhighlight = true,
+              winhighlight = false,
           },
       })
     '';
