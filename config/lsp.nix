@@ -11,7 +11,7 @@
     vim.api.nvim_create_user_command("LtexLangChangeLanguage", function(data)
         local language = data.fargs[1]
         local bufnr = vim.api.nvim_get_current_buf()
-        local client = vim.lsp.get_active_clients({ bufnr = bufnr, name = 'ltex' })
+        local client = vim.lsp.get_clients({ bufnr = bufnr, name = 'ltex' })
         if #client == 0 then
             vim.notify("No ltex client attached")
         else
@@ -352,8 +352,8 @@
       enable = true;
       enableOffsetEncodingWorkaround = true;
 
-      ast = {
-        roleIcons = {
+      settings.ast = {
+        role_icons = {
           type = "";
           declaration = "";
           expression = "";
@@ -361,7 +361,7 @@
           statement = "";
           templateArgument = "";
         };
-        kindIcons = {
+        kind_icons = {
           compound = "";
           recovery = "";
           translationUnit = "";

@@ -53,10 +53,8 @@
         };
       };
     };
-    dap = {
-      enable = true;
-      extensions.dap-python.enable = true;
-    };
+    dap-python.enable = true;
+    dap.enable = true;
     markdown-preview = {
       enable = true;
       settings = {

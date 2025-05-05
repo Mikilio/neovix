@@ -36,15 +36,31 @@
           val = 2;
         }
         {
-          type = "terminal";
-          command = "${lib.getExe pkgs.lolcat} -t -F 0.2 -S 42 -p 8 ${../assets/neovim.cat}";
-          width = 60;
-          height = 8;
           opts = {
-            redraw = true;
+            hl = "Type";
+            position = "center";
           };
-
+          type = "text";
+          val = [
+            "                                                        "
+            "      ████ ██████           █████      ██         "
+            "     ███████████             █████         █   "
+            "     █████████ ███████████████████ ███  ███"
+            "    █████████  ███    █████████████ █████  ███ "
+            "   █████████ ██████████ █████████ █████  ███ "
+            " ███████████ ███    ███ █████████ █████ ████"
+            "██████  █████████████████████ ████ █████ ██ ██"
+          ];
         }
+        # {
+        #   type = "terminal";
+        #   command = "${lib.getExe pkgs.dotacat} -F 0.2 -S 42 -p 8 ${../assets/neovim.cat}";
+        #   width = 60;
+        #   height = 8;
+        #   opts = {
+        #     redraw = true;
+        #   };
+        # }
         {
           type = "padding";
           val = 2;
