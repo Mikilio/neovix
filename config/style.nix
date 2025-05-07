@@ -1,22 +1,13 @@
 {
   lib,
+  pkgs,
+  inputs,
   ...
-}:
-let
-  rainbow = [
-    "rainbowcol1"
-    "rainbowcol2"
-    "rainbowcol3"
-    "rainbowcol4"
-    "rainbowcol5"
-    "rainbowcol6"
-    "rainbowcol7"
-  ];
-in
-{
+}: {
   plugins = {
     noice = {
       enable = true;
+      lazyLoad.settings.event = ["DeferredUIEnter"];
       settings = {
         lsp = {
           override = {
@@ -34,89 +25,32 @@ in
         };
       };
     };
-
-    indent-blankline = {
-      enable = true;
-      settings = {
-        exclude = {
-          buftypes = [
-            "terminal"
-            "nofile"
-            "quickfix"
-            "prompt"
-          ];
-          filetypes = [
-            "lspinfo"
-            "packer"
-            "checkhealth"
-            "help"
-            "man"
-            "dashboard"
-            "gitcommit"
-            "TelescopePrompt"
-            "TelescopeResults"
-            "''"
-          ];
-        };
-        scope = {
-          show_exact_scope = true;
-          highlight = rainbow;
-        };
-      };
-    };
-
-    rainbow-delimiters = {
-      enable = true;
-      highlight = rainbow;
-    };
-
-    snacks = {
-      enable = true;
-      settings = {
-        bigfile.enabled = true;
-        input.enabled = true;
-        notifier = {
-          enabled = true;
-          timeout = 3500;
-        };
-        quickfile.enabled = true;
-        statuscolumn.enabled = true;
-        words.enabled = true;
-        scroll.enabled = true;
-      };
-    };
-
-    colorizer.enable = true;
-    todo-comments.enable = true;
     web-devicons.enable = true;
+
+    colorizer = {
+      enable = true;
+      lazyLoad.settings.event = "BufReadPre";
+    };
+
+    lz-n.plugins = [
+      {
+        __unkeyed-1 = "tinted-nvim";
+        colorscheme = true;
+        after =
+          # lua
+          ''
+            function()
+              require('tinted-colorscheme').setup(vim.g.colors_name)
+            end
+          '';
+      }
+    ];
   };
-
-  extraConfigLuaPost = # lua
-    ''
-      local hooks = require "ibl.hooks"
-      hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_extmark)
-
-      local colors = require('base16-colorscheme').colors
-
-      vim.api.nvim_set_hl(0, 'Normal', {
-        fg = colors.base05,
-        bg = none,
-        ctermfg = colors.cterm05,
-        ctermbg = none,
-      })
-          
-      vim.api.nvim_set_hl(0, 'NormalNC', {
-        fg = colors.base05,
-        bg = colors.base01,
-        ctermfg = colors.cterm05,
-        ctermbg = colors.cterm01,
-      })
-    '';
-
-  # these optons are to be overriden by stylix
-  colorschemes.base16 = {
-    colorscheme = lib.mkDefault "catppuccin-mocha";
-    settings.telescope_borders = true;
-    enable = true;
-  };
+  colorscheme = lib.mkDefault "base16-catppuccin-mocha";
+  extraPlugins = [
+    (pkgs.vimUtils.buildVimPlugin {
+      name = "tinted-nvim";
+      src = inputs.tinted-nvim;
+    })
+  ];
 }

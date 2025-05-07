@@ -84,5 +84,9 @@
       url = "github:nvim-focus/focus.nvim";
       flake = false;
     };
+    tinted-nvim = {
+      url = "github:tinted-theming/tinted-nvim";
+      flake = false;
+    };
   };
 }

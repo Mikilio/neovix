@@ -3,43 +3,7 @@
   pkgs,
   inputs,
   ...
-}:
-{
-  # Utility Plugins
-
-  extraConfigLuaPost = ''
-    vim.api.nvim_create_user_command("LtexLangChangeLanguage", function(data)
-        local language = data.fargs[1]
-        local bufnr = vim.api.nvim_get_current_buf()
-        local client = vim.lsp.get_clients({ bufnr = bufnr, name = 'ltex' })
-        if #client == 0 then
-            vim.notify("No ltex client attached")
-        else
-            client = client[1]
-            client.config.settings = {
-                ltex = {
-                    language = language
-                }
-            }
-            client.notify('workspace/didChangeConfiguration', client.config.settings)
-            vim.notify("Language changed to " .. language)
-        end
-      end, {
-        nargs = 1,
-        force = true,
-    })
-  '';
-
-  # Language Servers
-
-  extraConfigLuaPre = ''
-    local efm_fs = require('efmls-configs.fs')
-    local djlint_fmt = {
-      formatCommand = string.format('%s --reformat ''${INPUT} -', efm_fs.executable('djlint')),
-      formatStdin = true,
-    }
-  '';
-
+}: {
   autoCmd = [
     {
       event = [
@@ -51,7 +15,8 @@
         "meson_options.txt"
         "meson.options"
       ];
-      callback.__raw = # lua
+      callback.__raw =
+        # lua
         ''
           function(args)
             local match = vim.fs.find(
@@ -69,114 +34,39 @@
     }
   ];
 
+  diagnostic.settings = {
+    virtual_lines = {
+      current_line = true;
+    };
+    virtual_text = false;
+    severity_sort = true;
+    signs = let
+      hl = {
+        "vim.diagnostic.severity.ERROR" = "DiagnosticError";
+        "vim.diagnostic.severity.WARN" = "DiagnosticWarn";
+        "vim.diagnostic.severity.INFO" = "DiagnosticInfo";
+        "vim.diagnostic.severity.HINT" = "DiagnosticHint";
+      };
+    in {
+      text = {
+        "vim.diagnostic.severity.ERROR" = "";
+        "vim.diagnostic.severity.WARN" = "";
+        "vim.diagnostic.severity.INFO" = "";
+        "vim.diagnostic.severity.HINT" = "";
+      };
+      linehl = hl;
+      numhl = hl;
+    };
+  };
+
   plugins = {
-    blink-cmp = {
-      enable = true;
-      package = inputs.blink.packages.${pkgs.stdenv.system}.default;
-      settings = {
-        keymap.preset = "super-tab";
-      };
-    };
-
-    treesitter = {
-      enable = true;
-      nixvimInjections = true;
-      settings = {
-        highlight.enable = true;
-        incremental_selection.enable = true;
-        indent.enable = true;
-      };
-    };
-    efmls-configs = {
-      enable = true;
-
-      toolPackages.mdformat = pkgs.mdformat.withPlugins (
-        ps: with ps; [
-          # TODO: broken with update of mdformat
-          # mdformat-gfm
-          mdformat-frontmatter
-          mdformat-footnote
-          mdformat-tables
-          mdit-py-plugins
-        ]
-      );
-
-      setup = {
-        sh = {
-          #linter = "shellcheck";
-          formatter = "shfmt";
-        };
-        bash = {
-          #linter = "shellcheck";
-          formatter = "shfmt";
-        };
-        c = {
-          linter = "cppcheck";
-        };
-        markdown = {
-          formatter = [
-            "cbfmt"
-            "mdformat"
-          ];
-        };
-        python = {
-          formatter = "black";
-        };
-        nix = {
-          linter = "statix";
-        };
-        lua = {
-          formatter = "stylua";
-        };
-        html = {
-          formatter = [
-            "prettier"
-            { __raw = "djlint_fmt"; }
-          ];
-        };
-        htmldjango = {
-          formatter.__raw = "djlint_fmt";
-          linter = "djlint";
-        };
-        json = {
-          formatter = "prettier";
-        };
-        css = {
-          formatter = "prettier";
-        };
-        ts = {
-          formatter = "prettier";
-        };
-        gitcommit = {
-          linter = "gitlint";
-        };
-      };
-    };
-
     lsp = {
+      #lsp
       enable = true;
+      inlayHints = true;
 
       postConfig = ''
         vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
-
-        vim.diagnostic.config({
-          virtual_text = true,
-          signs = true,
-          underline = true,
-          update_in_insert = true,
-          severity_sort = false,
-        })
-
-        local signs = {
-          Error = "",
-          Warn = "",
-          Info = "",
-          Hint = "",
-        }
-        for type, icon in pairs(signs) do
-          local hl = "DiagnosticSign" .. type
-          vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-        end
       '';
 
       keymaps = {
@@ -199,47 +89,12 @@
             action.__raw = "function() vim.lsp.codelens.run() end";
             options.desc = "LSP CodeLens run";
           }
-          {
-            key = "gr";
-            action = "<cmd>Telescope lsp_references<CR>";
-            options.desc = "Show references";
-          }
-          {
-            key = "gI";
-            action = "<cmd>Telescope lsp_implementations<CR>";
-            options.desc = "Show implementations";
-          }
-          {
-            key = "gW";
-            action = "<cmd>Telescope lsp_workspace_symbols<CR>";
-            options.desc = "Show symbols in Workspace";
-          }
-          {
-            key = "gF";
-            action = "<cmd>Telescope lsp_document_symbols<CR>";
-            options.desc = "Show symbols in Document";
-          }
-          {
-            key = "ge";
-            action = "<cmd>Telescope diagnostics bufnr=0<CR>";
-            options.desc = "Show all Errors in Document";
-          }
-          {
-            key = "gE";
-            action = "<cmd>Telescope diagnostics<CR>";
-            options.desc = "Show all Errors";
-          }
         ];
 
         lspBuf = {
           "<leader>la" = {
             action = "code_action";
             desc = "LSP code action";
-          };
-
-          "<leader>lf" = {
-            action = "format";
-            desc = "LSP code formatting";
           };
 
           "<leader>lr" = {
@@ -252,21 +107,6 @@
             desc = "View signature";
           };
 
-          gd = {
-            action = "definition";
-            desc = "Go to definition";
-          };
-
-          gD = {
-            action = "declaration";
-            desc = "Go to declaration";
-          };
-
-          gt = {
-            action = "type_definition";
-            desc = "Go to type definition";
-          };
-
           K = {
             action = "hover";
             desc = "LSP hover";
@@ -275,33 +115,11 @@
       };
 
       servers = {
-        nixd = {
-          enable = true;
-          settings = {
-            formatting.command = [ (lib.getExe pkgs.nixfmt-rfc-style) ];
-            # options =
-            #   let
-            #     getFlake = ''(builtins.getFlake "${flake}")'';
-            #   in
-            #   {
-            #     nixos.expr = ''${getFlake}.nixosConfigurations.ZeNixComputa.options'';
-            #     nixvim.expr = ''${getFlake}.packages.${pkgs.system}.neovimTraxys.options'';
-            #     home-manager.expr = ''${getFlake}.homeConfigurations."boyerq@thinkpad-nixos".options'';
-            #   };
-          };
-        };
+        nixd.enable = true;
         bashls.enable = true;
         dartls.enable = true;
         clangd.enable = true;
         ts_ls.enable = true;
-        efm.extraOptions = {
-          init_options = {
-            documentFormatting = true;
-          };
-          settings = {
-            logLevel = 1;
-          };
-        };
         taplo.enable = true;
         lemminx.enable = true;
         ltex = {
@@ -321,8 +139,105 @@
           ];
         };
       };
+      lazyLoad.settings.event = "BufReadPre";
     };
 
+    blink-cmp = {
+      enable = true;
+      settings = {
+        keymap.preset = "super-tab";
+        sources.per_filetype.codecompanion = ["codecompanion"];
+      };
+      lazyLoad.settings = {
+        event = "InsertEnter";
+      };
+    };
+    treesitter = {
+      enable = true;
+      settings = {
+        highlight.enable = true;
+        indent.enable = true;
+        incremental_selection = {
+          enable = true;
+          keymaps.__raw =
+            # lua
+            ''
+              {
+                init_selection = "<C-space>",
+                node_incremental = "<C-space>",
+                scope_incremental = false,
+                node_decremental = "<bs>",
+              }
+
+            '';
+        };
+        textobjects = {
+          move.__raw =
+            # lua
+            ''
+              {
+                enable = true,
+                goto_next_start = { ["]f"] = "@function.outer", ["]c"] = "@class.outer", ["]a"] = "@parameter.inner" },
+                goto_next_end = { ["]F"] = "@function.outer", ["]C"] = "@class.outer", ["]A"] = "@parameter.inner" },
+                goto_previous_start = { ["[f"] = "@function.outer", ["[c"] = "@class.outer", ["[a"] = "@parameter.inner" },
+                goto_previous_end = { ["[F"] = "@function.outer", ["[C"] = "@class.outer", ["[A"] = "@parameter.inner" },
+              }
+            '';
+        };
+      };
+      lazyLoad.settings = {
+        event = "DeferredUIEnter";
+        lazy.__raw =
+          # lua
+          ''
+            vim.fn.argc(-1) == 0
+          '';
+      };
+    };
+
+    conform-nvim = {
+      enable = true;
+      settings = {
+        formatters_by_ft = {
+          lua = ["stylua"];
+          nix = ["alejandra"];
+          python = [
+            "isort"
+            "black"
+          ];
+          javascript = ["prettierd"];
+        };
+        default_format_opts.lsp_format = "fallback";
+        format_on_save.timeout_ms = 500;
+        formatters = {
+          shfmt = {
+            prepend_args = [
+              "-i"
+              "2"
+            ];
+          };
+        };
+      };
+      lazyLoad.settings = {
+        lazy = true;
+        cmd = "ConformInfo";
+        keys = [
+          {
+            __unkeyed-1 = "<leader>cF";
+            __unkeyed-2.__raw = "function() require('conform').format({ async = true }) end";
+            desc = "Format buffer";
+          }
+        ];
+        before =
+          # lua
+          ''
+            function()
+              -- If you want the formatexpr, here is the place to set it
+              vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+            end
+          '';
+      };
+    };
     ltex-extra = {
       enable = true;
       settings = {
@@ -330,49 +245,16 @@
           "en-US"
           "de-DE"
         ];
-        path = ".ltex";
+        path.__raw =
+          # lua
+          ''
+            vim.fn.expand("state") .. "/ltex"
+          '';
       };
-
+      lazyLoad.settings.ft = [
+        "markdown"
+        "tex"
+      ];
     };
-
-    rustaceanvim = {
-      enable = true;
-
-      settings.server = {
-        default_settings.rust-analyzer = {
-          cargo.features = "all";
-          checkOnSave = true;
-          check.command = "clippy";
-          rustc.source = "discover";
-        };
-      };
-    };
-
-    clangd-extensions = {
-      enable = true;
-      enableOffsetEncodingWorkaround = true;
-
-      settings.ast = {
-        role_icons = {
-          type = "";
-          declaration = "";
-          expression = "";
-          specifier = "";
-          statement = "";
-          templateArgument = "";
-        };
-        kind_icons = {
-          compound = "";
-          recovery = "";
-          translationUnit = "";
-          packExpansion = "";
-          templateTypeParm = "";
-          templateTemplateParm = "";
-          templateParamObject = "";
-        };
-      };
-    };
-
   };
-
 }

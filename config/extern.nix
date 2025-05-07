@@ -1,41 +1,24 @@
-{ pkgs, inputs, ... }:
-let
-  mkPkgs = name: src: pkgs.vimUtils.buildVimPlugin { inherit name src; };
-
-  # ePlugins are the plugins that are not available in nixpkgs/nixvim coming from flakes
-  ePlugins = [
-    (mkPkgs "focus" inputs.focus)
-  ];
-  # nPlugins are normally available in nixpkgs
-  nPlugins = with pkgs.vimPlugins; [ telescope-zoxide ];
-
-in
 {
-  # Keeping this at top so that if any plugin is removed it's respective config can be removed
-  extraConfigLua = # lua
-    ''
-
-      require("focus").setup({
-          autoresize = {
-              minwidth = 40,
-              minheight = 10,
-          },
-          ui = {
-              hybridnumber = true,
-              winhighlight = false,
-          },
-      })
-    '';
-
-  extraPlugins = nPlugins ++ ePlugins;
+  pkgs,
+  inputs,
+  ...
+}: {
   extraPackages = with pkgs; [
     curl
     gzip
     coreutils
+    dwt1-shell-color-scripts
     util-linux
+    mermaid-cli
+    imagemagick_light
     biber
+    lazygit
     lldb
+    texliveTeTeX
     inputs.fenix.packages.${pkgs.stdenv.system}.complete.toolchain
+    ghostscript_headless
     cargo-nextest
+    gcc
+    tinty
   ];
 }

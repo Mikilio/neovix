@@ -1,5 +1,8 @@
-{ lib, ... }:
 {
+  lib,
+  pkgs,
+  ...
+}: {
   enableMan = true;
   viAlias = true;
   vimAlias = true;
@@ -9,6 +12,9 @@
   globals.mapleader = " ";
 
   globalOpts.statusline = "%#Normal#";
+
+  plugins.lz-n.enable = true;
+
   opts = {
     clipboard = "unnamedplus";
     cursorline = true;
@@ -49,7 +55,7 @@
     fileencoding = "utf-8";
     list = true;
     smoothscroll = true;
-    scrolloff=2;
+    scrolloff = 2;
     fillchars = {
       eob = " ";
     };
@@ -61,4 +67,134 @@
     winminwidth = 20;
     equalalways = false;
   };
+
+  keymaps = [
+    # Misc
+    {
+      action = "nzzzv";
+      key = "n";
+      mode = "n";
+      options = {
+        desc = "Move to center";
+        noremap = true;
+        silent = true;
+      };
+    }
+    {
+      action = "Nzzzv";
+      key = "N";
+      mode = "n";
+      options = {
+        desc = "Moving to center";
+        noremap = true;
+        silent = true;
+      };
+    }
+    {
+      action = "\"_x";
+      key = "x";
+      mode = "n";
+      options = {
+        desc = "No Copy Delete";
+        noremap = true;
+        silent = true;
+      };
+    }
+    {
+      action = "\"_r";
+      key = "r";
+      mode = "n";
+      options = {
+        desc = "No Copy Change";
+        noremap = true;
+        silent = true;
+      };
+    }
+    {
+      action = ":m '>+1<cr>gv-gv";
+      key = "<s-Down>";
+      mode = "v";
+      options = {
+        desc = "Move Selected Line Down";
+        noremap = true;
+        silent = true;
+      };
+    }
+    {
+      action = ":m '<lt>-2<CR>gv-gv";
+      key = "<s-Up>";
+      mode = "v";
+      options = {
+        desc = "Move Selected Line Up";
+        noremap = true;
+        silent = true;
+      };
+    }
+    {
+      action = "<gv";
+      key = "<";
+      mode = "v";
+      options = {
+        desc = "Indent out";
+        noremap = true;
+        silent = true;
+      };
+    }
+    {
+      action = ">gv";
+      key = ">";
+      mode = "v";
+      options = {
+        desc = "Indent in";
+        noremap = true;
+        silent = true;
+      };
+    }
+    {
+      action = "<Nop>";
+      key = "<space>";
+      mode = "v";
+      options = {
+        desc = "Mapped to Nothing";
+        noremap = true;
+        silent = true;
+      };
+    }
+    {
+      action = "\"_x";
+      key = "x";
+      mode = "v";
+      options = {
+        desc = "No Copy Delete";
+        noremap = true;
+        silent = true;
+      };
+    }
+    {
+      action = "\"_dP";
+      key = "P";
+      mode = "v";
+      options = {
+        desc = "No Copy Paste Above";
+        noremap = true;
+        silent = true;
+      };
+    }
+    {
+      action = "p:let @+=@0<CR>:let @\"=@0<CR>";
+      key = "p";
+      mode = "x";
+      options = {
+        desc = "Dont copy replaced text";
+        noremap = true;
+        silent = true;
+      };
+    }
+  ];
+  extraPlugins = [pkgs.vimPlugins.lzn-auto-require];
+  extraConfigLuaPost =
+    # lua
+    ''
+      require('lzn-auto-require').enable()
+    '';
 }

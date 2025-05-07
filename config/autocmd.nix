@@ -1,9 +1,8 @@
-{ ... }:
-{
+{...}: {
   autoCmd = [
     {
       desc = "Highlight on yank";
-      event = [ "TextYankPost" ];
+      event = ["TextYankPost"];
       callback = {
         __raw = ''
           function()
@@ -12,10 +11,34 @@
         '';
       };
     }
+    # {
+    #   desc = "Dim background of inactive windows";
+    #   event = [ "ColorScheme" ];
+    #   callback.__raw = # lua
+    #     ''
+    #       function()
+    #         local colors = require('tinted-colorscheme').colors
+    #
+    #         vim.api.nvim_set_hl(0, 'Normal', {
+    #           fg = colors.base05,
+    #           bg = 'none',
+    #           ctermfg = colors.cterm05,
+    #           ctermbg = 'none',
+    #         })
+    #
+    #         vim.api.nvim_set_hl(0, 'NormalNC', {
+    #           fg = colors.base05,
+    #           bg = colors.base01,
+    #           ctermfg = colors.cterm05,
+    #           ctermbg = colors.cterm01,
+    #         })
+    #       end
+    #     '';
+    # }
 
     {
       desc = "Close these type of File";
-      event = [ "FileType" ];
+      event = ["FileType"];
       pattern = [
         "PlenaryTestPopup"
         "help"
@@ -45,11 +68,12 @@
 
     {
       desc = "Do not save session for special";
-      event = [ "FileType" ];
+      event = ["FileType"];
       pattern = [
         "gitcommit"
       ];
-      callback.__raw = # lua
+      callback.__raw =
+        # lua
         ''
            function()
             require("persistence").stop()
@@ -59,7 +83,7 @@
 
     {
       desc = "Auto create dir when save file, in case some intermediate directory is missing";
-      event = [ "BufWritePre" ];
+      event = ["BufWritePre"];
       callback = {
         __raw = ''
           function(event)
@@ -76,7 +100,8 @@
     {
       desc = "Disable Bufferlines for Firenvim";
       event = "UIEnter";
-      callback.__raw = # lua
+      callback.__raw =
+        # lua
         ''
           function(event)
               local client = vim.api.nvim_get_chan_info(vim.v.event.chan).client
