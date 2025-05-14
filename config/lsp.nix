@@ -118,6 +118,7 @@
         nixd.enable = true;
         bashls.enable = true;
         dartls.enable = true;
+        ccls.enable = true;
         clangd.enable = true;
         ts_ls.enable = true;
         taplo.enable = true;
