@@ -118,7 +118,18 @@
         nixd.enable = true;
         bashls.enable = true;
         dartls.enable = true;
-        ccls.enable = true;
+        rust_analyzer = {
+          enable = true;
+          installCargo = false;
+          installRustc = false;
+        };
+        kotlin_language_server.enable = true;
+        jdtls.enable = true;
+        helm_ls.enable = true;
+        ccls = {
+          enable = true;
+          filetypes = ["c" "objc"];
+        };
         clangd.enable = true;
         ts_ls.enable = true;
         taplo.enable = true;
