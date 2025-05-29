@@ -124,7 +124,7 @@
           installRustc = false;
         };
         kotlin_language_server.enable = true;
-        jdtls.enable = true;
+        java_language_server.enable = true;
         helm_ls.enable = true;
         ccls = {
           enable = true;

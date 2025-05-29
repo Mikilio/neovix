@@ -115,7 +115,6 @@
             '';
         };
         display.chat = {
-          show_settings = true;
           window.layout = "float";
         };
         opts = {
@@ -130,6 +129,17 @@
           };
           chat = {
             adapter = "openrouter";
+            roles.llm.__raw =
+              #lua
+              ''
+                function(adapter)
+                  local name = adapter.formatted_name
+                  if (adapter.model and adapter.model.name) then
+                    name = name .. " (" .. adapter.model.name .. ")"
+                  end
+                  return name
+                end
+              '';
           };
           inline = {
             adapter = "openrouter";

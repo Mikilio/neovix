@@ -196,5 +196,7 @@
     # lua
     ''
       require('lzn-auto-require').enable()
+      -- weird workaround for now
+      require('smart-splits')
     '';
 }
