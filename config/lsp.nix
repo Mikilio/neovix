@@ -124,7 +124,10 @@
           installRustc = false;
         };
         kotlin_language_server.enable = true;
-        java_language_server.enable = true;
+        jdtls = {
+          enable = true;
+          settings.java.project.sourcePaths = ["src" "src/main/java"];
+        };
         helm_ls.enable = true;
         ccls = {
           enable = true;
@@ -218,6 +221,7 @@
             "black"
           ];
           javascript = ["prettierd"];
+          java = ["google-java-format"];
         };
         default_format_opts.lsp_format = "fallback";
         format_on_save.timeout_ms = 500;
