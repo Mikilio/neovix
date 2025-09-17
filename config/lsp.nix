@@ -134,6 +134,7 @@
           filetypes = ["c" "objc"];
         };
         clangd.enable = true;
+        pyright.enable = true;
         ts_ls.enable = true;
         taplo.enable = true;
         lemminx.enable = true;
