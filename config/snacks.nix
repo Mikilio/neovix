@@ -17,7 +17,7 @@
               cmd = "${lib.getExe pkgs.dotacat} -F 0.2 -S 42 -p 8 ${../assets/neovim.cat}",
               ttl = 5,
               hl = "header",
-              padding = 1,
+              padding = 5,
             },
             {
               pane = 2,
@@ -26,7 +26,7 @@
               action = function() require("persistence").load() end,
               key = "s",
               ttl = 5,
-              padding = 1,
+              padding = 3,
             },
             {
               pane = 2,

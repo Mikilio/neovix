@@ -18,7 +18,6 @@
   opts = {
     clipboard = "unnamedplus";
     cursorline = true;
-    cursorlineopt = "number";
 
     pumblend = 0;
     pumheight = 10;
@@ -33,10 +32,6 @@
     smartcase = true;
     mouse = "a";
     cmdheight = 0;
-
-    number = true;
-    relativenumber = true;
-    numberwidth = 2;
 
     signcolumn = "yes";
     splitbelow = true;
