@@ -13,7 +13,7 @@ _: {
           left = "";
           right = "";
         };
-        theme = "tinted";
+        theme = "base16";
       };
 
       tabline = {

@@ -66,7 +66,7 @@
       inlayHints = true;
 
       postConfig = ''
-        vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+        vim.lsp.handlers["textDocument/hover"] = vim.lsp.buf.hover({ border = "rounded" })
       '';
 
       keymaps = {
@@ -160,12 +160,21 @@
 
     blink-cmp = {
       enable = true;
+      setupLspCapabilities = false;
       settings = {
         keymap.preset = "super-tab";
         sources.per_filetype.codecompanion = ["codecompanion"];
       };
+      luaConfig.post =
+        #lua
+        ''
+          local capabilities = vim.lsp.protocol.make_client_capabilities()
+          vim.lsp.config('*', {
+            capabilities = require('blink.cmp').get_lsp_capabilities(capabilities)
+          })
+        '';
       lazyLoad.settings = {
-        event = "InsertEnter";
+        event = ["InsertEnter" "CmdlineEnter"];
       };
     };
     treesitter = {
