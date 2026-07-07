@@ -5,47 +5,27 @@
   config,
   ...
 }: {
+  
+  extraPlugins = [(pkgs.vimUtils.buildVimPlugin {
+    name = "base46";
+    src = pkgs.fetchFromGitHub {
+        owner = "AvengeMedia";
+        repo = "base46";
+        rev = "cb8a1257bbc2640f6e7415a01219b34d3efd1494";
+        hash = "sha256-6kK8q2dmmW3RO9FQmlcYN6Yyhl6fXE5ey1l8PWRVCfc=";
+    };
+    nvimRequireCheck = [];
+    doCheck = false;
+  })];
+
   extraConfigLuaPre =
     #lua
     ''
-      local function source_matugen()
-        -- Update this with the location of your output file
-        local matugen_path = os.getenv("HOME") .. "/.config/nvim/generated.lua"  -- dofile doesn't expand $HOME or ~
-
-        local file, err = io.open(matugen_path, "r")
-        -- If the matugen file does not exist (yet or at all), we must initialize a color scheme ourselves
-        if err ~= nil then
-          -- Some placeholder theme, this will be overwritten once matugen kicks in
-          vim.cmd('colorscheme base16-catppuccin-mocha')
-
-          -- Optionally print something to the user
-          vim.print("A matugen style file was not found, but that's okay! The colorscheme will dynamically change if matugen runs!")
-        else
-          dofile(matugen_path)
-          io.close(file)
-        end
-      end
-
-      local function auxiliary_function()
-        -- Load the matugen style file to get all the new colors
-        source_matugen()
-        require('lz.n').trigger_load('lualine')
-      end
-
-      source_matugen()
+      require("base46").setup()
+      vim.opt.runtimepath:append(vim.fn.expand("~/.config/nvim"))
     '';
 
-  autoCmd = [
-    {
-      event = "Signal";
-      pattern = "SIGUSR1";
-      callback.__raw = "auxiliary_function";
-    }
-  ];
-
-  colorschemes.base16 = {
-    enable = true;
-  };
+  colorscheme = "dms";
 
   plugins = {
     noice = {
@@ -74,19 +54,5 @@
       enable = true;
       lazyLoad.settings.event = "BufReadPre";
     };
-
-    lz-n.plugins = [
-      {
-        __unkeyed-1 = "tinted-nvim";
-        colorscheme = true;
-        after =
-          # lua
-          ''
-            function()
-              require('tinted-colorscheme').setup(vim.g.colors_name)
-            end
-          '';
-      }
-    ];
   };
 }
