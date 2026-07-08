@@ -15,7 +15,7 @@
         need = 1;
         branch = true;
       };
-      lazyLoad.settings.event = "BufReadPre";
+      lazyLoad.settings.event = "DeferredUIEnter";
     };
     nvim-surround = {
       enable = true;

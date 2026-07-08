@@ -67,6 +67,25 @@
     }
 
     {
+      desc = "Skip dashboard when session exists";
+      event = "User";
+      pattern = [
+        "SnacksDashboardOpened"
+      ];
+      callback = {
+        __raw = ''
+          function()
+            require('persistence').load()
+              vim.schedule(function()
+                pcall(vim.cmd.windo, 'edit')
+              end)
+          end
+        '';
+      };
+
+    }
+
+    {
       desc = "Do not save session for special";
       event = ["FileType"];
       pattern = [
