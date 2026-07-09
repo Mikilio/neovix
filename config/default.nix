@@ -7,7 +7,6 @@
     ./lsp.nix
     ./utils.nix
     ./integrations.nix
-    ./extern.nix
     ./opts.nix
     ./snacks.nix
   ];

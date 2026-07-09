@@ -63,6 +63,10 @@
     equalalways = false;
   };
 
+  # NOTE: coreutils/gzip/util-linux were previously listed here but are
+  # present in virtually all environments. Re-add if you run this via
+  # `nix run` on a host that lacks them.
+
   keymaps = [
     # Misc
     {

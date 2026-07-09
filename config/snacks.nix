@@ -4,11 +4,29 @@
   lib,
   ...
 }: {
+  # Dependencies for snacks.nvim features
+  dependencies = {
+    curl.enable = true; # snacks image (download remote images)
+    lazygit.enable = true; # Snacks.lazygit() keybinding
+  };
+
   plugins.snacks = {
     enable = true;
     settings = {
       bigfile.enabled = true;
-      dashboard.sections = [{section = "header";}];
+      dashboard.sections.__raw =
+        # lua
+        ''
+          {
+            {
+              section = "terminal",
+              cmd = "${lib.getExe pkgs.dotacat} -F 0.2 -S 42 -p 8 ${../assets/neovim.cat}",
+              hl = "header",
+              padding = 5,
+            },
+            { section = "keys", gap = 1, padding = 1 },
+          }
+        '';
       indent.enabled = true;
       input.enabled = true;
       image.enabled = true;

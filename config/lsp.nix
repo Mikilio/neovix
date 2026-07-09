@@ -4,6 +4,10 @@
   inputs,
   ...
 }: {
+  # NOTE: treesitter uses nixvim pre-compiled grammars (nixGrammars default true),
+  # so gcc is not required. If you switch to custom grammars, add:
+  # dependencies.gcc.enable = true;
+
   autoCmd = [
     {
       event = [

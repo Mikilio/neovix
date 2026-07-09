@@ -1,4 +1,15 @@
 {pkgs, ...}: {
+  # Dependencies for integrations plugins
+  dependencies = {
+    opencode.packageFallback = true;
+  };
+
+  extraPackages = with pkgs; [
+    # vimtex LaTeX toolchain (not declared as nixvim dependencies)
+    biber # bibliography backend
+    ghostscript_headless # PDF processing for sioyek viewer
+  ];
+
   userCommands.CC.command = "CodeCompanion";
   extraConfigLuaPost =
     #lua
@@ -19,6 +30,8 @@
 
     '';
 
+  opts.autoread = true;
+
   plugins = {
     nix-develop = {
       enable = true;
@@ -29,120 +42,90 @@
       ];
     };
 
-    codecompanion = {
+    opencode = {
       enable = true;
       lazyLoad.settings = {
-        cmd = [
-          "CodeCompanionChat"
-          "CodeCompanionActions"
-          "CodeCompanion"
-          "CodeCompanionCmd"
-        ];
         keys = [
           {
-            __unkeyed-1 = "<C-a>";
-            __unkeyed-2 = "<cmd>CodeCompanionActions<cr>";
-            mode = [
-              "n"
-              "v"
-            ];
-            noremap = true;
-            silent = true;
-          }
-          {
-            __unkeyed-1 = "<leader>a";
-            __unkeyed-2 = "<cmd>CodeCompanionChat Toggle<cr>";
-            mode = [
-              "n"
-              "v"
-            ];
-            noremap = true;
-            silent = true;
-          }
-          {
-            __unkeyed-1 = "ga";
-            __unkeyed-2 = "<cmd>CodeCompanionChat Add<cr>";
-            mode = "v";
-            noremap = true;
-            silent = true;
-          }
-        ];
-        # before = #lua
-        #   ''
-        #
-        #   '';
-      };
-      settings = {
-        adapters = {
-          opts.show_defaults = false;
-
-          ollama.__raw =
-            # lua
-            ''
-              function()
-                return require('codecompanion.adapters').extend('ollama', {
-                    env = {
-                        url = "http://127.0.0.1:11434",
-                    },
-                    schema = {
-                        model = {
-                            default = 'qwen2.5-coder:latest',
-                        },
-                        num_ctx = {
-                            default = 4096,
-                        },
-                    },
-                })
-              end
-            '';
-          openrouter.__raw =
-            # lua
-            ''
-              function()
-                return require("codecompanion.adapters").extend("openai_compatible", {
-                  env = {
-                    url = "https://openrouter.ai/api",
-                    api_key = "cmd:pass /API/openrouter 2>/dev/null",
-                    chat_url = "/v1/chat/completions",
-                  },
-                  schema = {
-                    model = {
-                      default = "google/gemini-2.0-flash-001",
-                    },
-                  },
-                })
-              end
-            '';
-        };
-        display.chat = {
-          window.layout = "float";
-        };
-        opts = {
-          log_level = "TRACE";
-          send_code = true;
-          use_default_actions = true;
-          use_default_prompts = true;
-        };
-        strategies = {
-          agent = {
-            adapter = "openrouter";
-          };
-          chat = {
-            adapter = "openrouter";
-            roles.llm.__raw =
+            __unkeyed-1 = "<leader>oa";
+            __unkeyed-2.__raw =
               #lua
               ''
-                function(adapter)
-                  local name = adapter.formatted_name
-                  if (adapter.model and adapter.model.name) then
-                    name = name .. " (" .. adapter.model.name .. ")"
-                  end
-                  return name
-                end
+                function() require("opencode").ask("@this: ") end
               '';
-          };
-          inline = {
-            adapter = "openrouter";
+            desc = "Ask OpenCode…";
+            mode = ["n" "x"];
+          }
+          {
+            __unkeyed-1 = "<leader>os";
+            __unkeyed-2.__raw =
+              #lua
+              ''
+                function() require("opencode").select() end
+              '';
+            desc = "Select OpenCode…";
+            mode = ["n" "x"];
+          }
+          {
+            __unkeyed-1 = "go";
+            __unkeyed-2.__raw =
+              #lua
+              ''
+                function() return require("opencode").operator("@this ") end
+              '';
+            desc = "Append range to OpenCode";
+            expr = true;
+            mode = ["n" "x"];
+          }
+          {
+            __unkeyed-1 = "goo";
+            __unkeyed-2.__raw =
+              #lua
+              ''
+                function() return require("opencode").operator("@this ") .. "_" end
+              '';
+            desc = "Append line to OpenCode";
+            expr = true;
+
+            mode = "n";
+          }
+          {
+            __unkeyed-1 = "<S-C-u>";
+            __unkeyed-2.__raw =
+              #lua
+              ''
+                function() require("opencode").command("session.half.page.up") end
+              '';
+            desc = "Scroll OpenCode up";
+            mode = "n";
+          }
+          {
+            __unkeyed-1 = "<S-C-d>";
+            __unkeyed-2.__raw =
+              #lua
+              ''
+                function() require("opencode").command("session.half.page.down") end
+              '';
+            desc = "Scroll OpenCode down";
+            mode = "n";
+          }
+        ];
+      };
+      settings = {
+        auto_reload = false;
+        server = {
+          start.__raw =
+            #lua
+            ''
+              function()
+                vim.fn.jobstart({ "tmux", "new-window", "-d", "-n", "opencode", "-c", vim.fn.getcwd(-1, 0), "opencode", "--port" })
+              end
+            '';
+        };
+        prompts = {
+          example = {
+            description = "An example prompt configuration";
+            prompt = "Write a function that returns the factorial of a number";
           };
         };
       };
@@ -243,6 +226,7 @@
     # we don't want to lazy load VimTeX https://github.com/lervag/vimtex#Installation
     vimtex = {
       enable = true;
+      texlivePackage = pkgs.texliveTeTeX;
       settings = {
         complete_enabled = false;
         parser_bib_backend = "lua";

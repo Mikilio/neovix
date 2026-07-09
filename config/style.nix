@@ -5,7 +5,6 @@
   config,
   ...
 }: {
-  
   extraPlugins = [(pkgs.vimUtils.buildVimPlugin {
     name = "base46";
     src = pkgs.fetchFromGitHub {
@@ -25,7 +24,17 @@
       vim.opt.runtimepath:append(vim.fn.expand("~/.config/nvim"))
     '';
 
-  colorscheme = "dms";
+  extraConfigLuaPost =
+    #lua
+    ''
+      -- Try "dms" (dynamically present when ~/.config/nvim/colors/dms.lua exists);
+      -- otherwise fall back to base46-rosepine-moon (shipped with base46).
+      if vim.tbl_contains(vim.fn.getcompletion("", "color"), "dms") then
+        vim.cmd("colorscheme dms")
+      else
+        vim.cmd("colorscheme base46-rosepine-moon")
+      end
+    '';
 
   plugins = {
     noice = {
