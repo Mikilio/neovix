@@ -33,7 +33,28 @@
         enabled = true;
         timeout = 3000;
       };
-      picker.enabled = true;
+      picker = {
+        enabled = true;
+        win.input.keys = {
+          "<a-a>" = {
+            __unkeyed-1 = "opencode_send";
+            mode = [ "n" "i" ];
+          };
+        };
+        actions.opencode_send.__raw =
+          # lua
+          ''
+            function(picker)
+              require('lz.n').trigger_load('opencode')
+              local items = vim.tbl_map(function(item)
+                return item.file
+                  and require("opencode").format({ path = item.file, from = item.pos, to = item.end_pos })
+                  or item.text
+              end, picker:selected({ fallback = true }))
+              require("opencode").prompt(table.concat(items, ", ") .. " ")
+            end
+          '';
+      };
       terminal.enabled = false;
       quickfile.enabled = true;
       scope.enabled = true;
