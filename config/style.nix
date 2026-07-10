@@ -1,21 +1,22 @@
-{
-  lib,
-  pkgs,
-  inputs,
-  config,
-  ...
+{ lib
+, pkgs
+, inputs
+, config
+, ...
 }: {
-  extraPlugins = [(pkgs.vimUtils.buildVimPlugin {
-    name = "base46";
-    src = pkgs.fetchFromGitHub {
+  extraPlugins = [
+    (pkgs.vimUtils.buildVimPlugin {
+      name = "base46";
+      src = pkgs.fetchFromGitHub {
         owner = "AvengeMedia";
         repo = "base46";
         rev = "cb8a1257bbc2640f6e7415a01219b34d3efd1494";
         hash = "sha256-6kK8q2dmmW3RO9FQmlcYN6Yyhl6fXE5ey1l8PWRVCfc=";
-    };
-    nvimRequireCheck = [];
-    doCheck = false;
-  })];
+      };
+      nvimRequireCheck = [ ];
+      doCheck = false;
+    })
+  ];
 
   extraConfigLuaPre =
     #lua
@@ -39,7 +40,7 @@
   plugins = {
     noice = {
       enable = true;
-      lazyLoad.settings.event = ["DeferredUIEnter"];
+      lazyLoad.settings.event = [ "DeferredUIEnter" ];
       settings = {
         lsp = {
           override = {

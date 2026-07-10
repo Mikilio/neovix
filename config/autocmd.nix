@@ -1,8 +1,8 @@
-{...}: {
+{ ... }: {
   autoCmd = [
     {
       desc = "Highlight on yank";
-      event = ["TextYankPost"];
+      event = [ "TextYankPost" ];
       callback = {
         __raw = ''
           function()
@@ -38,7 +38,7 @@
 
     {
       desc = "Close these type of File";
-      event = ["FileType"];
+      event = [ "FileType" ];
       pattern = [
         "PlenaryTestPopup"
         "help"
@@ -82,12 +82,11 @@
           end
         '';
       };
-
     }
 
     {
       desc = "Do not save session for special";
-      event = ["FileType"];
+      event = [ "FileType" ];
       pattern = [
         "gitcommit"
       ];
@@ -102,7 +101,7 @@
 
     {
       desc = "Auto create dir when save file, in case some intermediate directory is missing";
-      event = ["BufWritePre"];
+      event = [ "BufWritePre" ];
       callback = {
         __raw = ''
           function(event)
@@ -111,6 +110,26 @@
             end
             local file = vim.loop.fs_realpath(event.match) or event.match
             vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
+          end
+        '';
+      };
+    }
+
+    {
+      desc = "Format with nix fmt on save when enabled";
+      event = [ "BufWritePost" ];
+      callback = {
+        __raw = ''
+          function(args)
+            local buf = args.buf
+            local enabled = vim.b[buf].autoformat_enabled
+            if enabled == nil then
+              enabled = vim.g.autoformat_enabled
+            end
+            if enabled == false then
+              return
+            end
+            _G.format_buffer(buf)
           end
         '';
       };

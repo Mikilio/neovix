@@ -1,7 +1,6 @@
-{
-  lib,
-  pkgs,
-  ...
+{ lib
+, pkgs
+, ...
 }: {
   enableMan = true;
   viAlias = true;
@@ -190,12 +189,4 @@
       };
     }
   ];
-  extraPlugins = [pkgs.vimPlugins.lzn-auto-require];
-  extraConfigLuaPost =
-    # lua
-    ''
-      require('lzn-auto-require').enable()
-      -- weird workaround for now
-      require('smart-splits')
-    '';
 }

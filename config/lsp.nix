@@ -1,40 +1,73 @@
-{
-  lib,
-  pkgs,
-  inputs,
-  ...
+{ lib
+, pkgs
+, ...
 }: {
-  # NOTE: treesitter uses nixvim pre-compiled grammars (nixGrammars default true),
-  # so gcc is not required. If you switch to custom grammars, add:
-  # dependencies.gcc.enable = true;
 
-  autoCmd = [
+  extraConfigLua =
+    # lua
+    ''
+      _G.format_buffer = function(buf)
+        buf = buf or vim.api.nvim_get_current_buf()
+        local path = vim.api.nvim_buf_get_name(buf)
+        local result = vim.system({"nix", "fmt", path}):wait()
+        if result.code ~= 0 then
+          vim.notify("nix fmt failed (exit " .. result.code .. "): " .. (result.stderr or ""), vim.log.levels.WARN)
+          return false
+        end
+        vim.api.nvim_buf_call(buf, function()
+          vim.cmd("checktime")
+        end)
+        vim.notify("Formatted with nix fmt", vim.log.levels.INFO)
+        return true
+      end
+    '';
+
+
+  keymaps = [
     {
-      event = [
-        "BufNewFile"
-        "BufRead"
-      ];
-      pattern = [
-        "meson.build"
-        "meson_options.txt"
-        "meson.options"
-      ];
-      callback.__raw =
+      mode = "n";
+      key = "<leader>cf";
+      action.__raw = "function() _G.format_buffer() end";
+      options.desc = "Format buffer with nix fmt";
+    }
+    {
+      mode = "n";
+      key = "<leader>uf";
+      action.__raw =
         # lua
         ''
-          function(args)
-            local match = vim.fs.find(
-              {"meson_options.txt", "meson.options", ".git"},
-              {path = args.file, upward = true}
-            )[1]
-            local root_dir = match and vim.fn.fnamemodify(match, ":p:h") or nil
-            vim.lsp.start({
-              name = "mesonlsp",
-              cmd = {"${lib.getExe pkgs.mesonlsp}", "--lsp"},
-              root_dir = root_dir,
-            })
+          function()
+            local buf = vim.api.nvim_get_current_buf()
+            local enabled = vim.b[buf].autoformat_enabled
+            if enabled == nil then
+              enabled = vim.g.autoformat_enabled
+            end
+            enabled = not (enabled ~= false)
+            vim.b[buf].autoformat_enabled = enabled
+            local status = enabled and "enabled" or "disabled"
+            vim.notify("Buffer auto-format " .. status, vim.log.levels.INFO)
           end
         '';
+      options.desc = "Toggle buffer auto-format";
+    }
+    {
+      mode = "n";
+      key = "<leader>uF";
+      action.__raw =
+        # lua
+        ''
+          function()
+            local enabled = vim.g.autoformat_enabled
+            if enabled == nil then
+              enabled = true
+            end
+            enabled = not enabled
+            vim.g.autoformat_enabled = enabled
+            local status = enabled and "enabled" or "disabled"
+            vim.notify("Global auto-format " .. status, vim.log.levels.INFO)
+          end
+        '';
+      options.desc = "Toggle global auto-format";
     }
   ];
 
@@ -44,23 +77,25 @@
     };
     virtual_text = false;
     severity_sort = true;
-    signs = let
-      hl = {
-        "vim.diagnostic.severity.ERROR" = "DiagnosticError";
-        "vim.diagnostic.severity.WARN" = "DiagnosticWarn";
-        "vim.diagnostic.severity.INFO" = "DiagnosticInfo";
-        "vim.diagnostic.severity.HINT" = "DiagnosticHint";
+    signs =
+      let
+        hl = {
+          "vim.diagnostic.severity.ERROR" = "DiagnosticError";
+          "vim.diagnostic.severity.WARN" = "DiagnosticWarn";
+          "vim.diagnostic.severity.INFO" = "DiagnosticInfo";
+          "vim.diagnostic.severity.HINT" = "DiagnosticHint";
+        };
+      in
+      {
+        text = {
+          "vim.diagnostic.severity.ERROR" = "";
+          "vim.diagnostic.severity.WARN" = "";
+          "vim.diagnostic.severity.INFO" = "";
+          "vim.diagnostic.severity.HINT" = "";
+        };
+        linehl = hl;
+        numhl = hl;
       };
-    in {
-      text = {
-        "vim.diagnostic.severity.ERROR" = "";
-        "vim.diagnostic.severity.WARN" = "";
-        "vim.diagnostic.severity.INFO" = "";
-        "vim.diagnostic.severity.HINT" = "";
-      };
-      linehl = hl;
-      numhl = hl;
-    };
   };
 
   plugins = {
@@ -69,16 +104,12 @@
       enable = true;
       inlayHints = true;
 
-      postConfig = ''
-        vim.lsp.handlers["textDocument/hover"] = vim.lsp.buf.hover({ border = "rounded" })
-      '';
-
       keymaps = {
         extra = [
           {
             mode = "n";
             key = "<leader>li";
-            action = "<cmd>LspInfo<cr>";
+            action = "<cmd>checkhealth vim.lsp<cr>";
             options.desc = "Show LSP info";
           }
           {
@@ -119,31 +150,106 @@
       };
 
       servers = {
-        nixd.enable = true;
+        # Global lightweight servers — always available
         bashls.enable = true;
-        dartls.enable = true;
+        taplo.enable = true;
+        yamlls.enable = true;
+        jsonls.enable = true;
+        html.enable = true;
+        cssls.enable = true;
+
+        # Heavy servers — configured via lspconfig, binary from devShell
+        nixd = {
+          enable = true;
+          package = null;
+        };
+        dartls = {
+          enable = true;
+          package = null;
+        };
         rust_analyzer = {
           enable = true;
+          package = null;
           installCargo = false;
           installRustc = false;
+          extraOptions.root_dir = lib.nixvim.mkRaw ''
+            function(bufnr)
+              local fname = vim.api.nvim_buf_get_name(bufnr)
+              local dir = vim.fs.dirname(fname)
+              local markers = { "Cargo.toml", ".git" }
+              for _, m in ipairs(markers) do
+                local found = vim.fs.find(m, { upward = true, path = dir })
+                if #found > 0 then
+                  return vim.fs.dirname(found[1])
+                end
+              end
+              return nil
+            end
+          '';
         };
-        kotlin_language_server.enable = true;
+        kotlin_language_server = {
+          enable = true;
+          package = null;
+        };
         jdtls = {
           enable = true;
-          settings.java.project.sourcePaths = ["src" "src/main/java"];
+          package = null;
+          settings.java.project.sourcePaths = [ "src" "src/main/java" ];
         };
-        helm_ls.enable = true;
+        helm_ls = {
+          enable = true;
+          package = null;
+        };
         ccls = {
           enable = true;
-          filetypes = ["c" "objc"];
+          package = null;
+          extraOptions.root_dir = lib.nixvim.mkRaw ''
+            function(bufnr)
+              local fname = vim.api.nvim_buf_get_name(bufnr)
+              local dir = vim.fs.dirname(fname)
+              local found = vim.fs.find('.ccls', { upward = true, path = dir })
+              if #found > 0 then
+                return vim.fs.dirname(found[1])
+              end
+              return nil
+            end
+          '';
         };
-        clangd.enable = true;
-        pyright.enable = true;
-        ts_ls.enable = true;
-        taplo.enable = true;
-        lemminx.enable = true;
+        clangd = {
+          enable = true;
+          package = null;
+          extraOptions.root_dir = lib.nixvim.mkRaw ''
+            function(bufnr)
+              local fname = vim.api.nvim_buf_get_name(bufnr)
+              local dir = vim.fs.dirname(fname)
+              local ccls = vim.fs.find('.ccls', { upward = true, path = dir })
+              if #ccls > 0 then return nil end
+              local markers = { '.git', 'compile_commands.json' }
+              for _, m in ipairs(markers) do
+                local found = vim.fs.find(m, { upward = true, path = dir })
+                if #found > 0 then
+                  return vim.fs.dirname(found[1])
+                end
+              end
+              return nil
+            end
+          '';
+        };
+        pyright = {
+          enable = true;
+          package = null;
+        };
+        ts_ls = {
+          enable = true;
+          package = null;
+        };
+        lemminx = {
+          enable = true;
+          package = null;
+        };
         ltex = {
           enable = true;
+          package = null;
           filetypes = [
             "bib"
             "gitcommit"
@@ -155,11 +261,58 @@
             "tex"
             "pandoc"
             "typst"
-            #"mail"
           ];
         };
+        dockerls = {
+          enable = true;
+          package = null;
+        };
+        sqlls = {
+          enable = true;
+          package = null;
+        };
+        zls = {
+          enable = true;
+          package = null;
+        };
+        hls = {
+          enable = true;
+          package = null;
+          installGhc = false;
+        };
+        powershell_es = {
+          enable = true;
+          package = null;
+        };
+        terraformls = {
+          enable = true;
+          package = null;
+        };
+        intelephense = {
+          enable = true;
+          package = null;
+        };
+        csharp_ls = {
+          enable = true;
+          package = null;
+        };
+        r_language_server = {
+          enable = true;
+          package = null;
+        };
+        julials = {
+          enable = true;
+          package = null;
+        };
+        lua_ls = {
+          enable = true;
+          package = null;
+        };
+        mesonlsp = {
+          enable = true;
+          package = null;
+        };
       };
-      lazyLoad.settings.event = "BufReadPre";
     };
 
     blink-cmp = {
@@ -167,7 +320,7 @@
       setupLspCapabilities = false;
       settings = {
         keymap.preset = "super-tab";
-        sources.per_filetype.codecompanion = ["codecompanion"];
+        sources.per_filetype.codecompanion = [ "codecompanion" ];
       };
       luaConfig.post =
         #lua
@@ -178,7 +331,7 @@
           })
         '';
       lazyLoad.settings = {
-        event = ["InsertEnter" "CmdlineEnter"];
+        event = [ "InsertEnter" "CmdlineEnter" ];
       };
     };
     treesitter = {
@@ -222,69 +375,6 @@
             vim.fn.argc(-1) == 0
           '';
       };
-    };
-
-    conform-nvim = {
-      enable = true;
-      settings = {
-        formatters_by_ft = {
-          lua = ["stylua"];
-          nix = ["alejandra"];
-          python = [
-            "isort"
-            "black"
-          ];
-          javascript = ["prettierd"];
-          java = ["google-java-format"];
-        };
-        default_format_opts.lsp_format = "fallback";
-        format_on_save.timeout_ms = 500;
-        formatters = {
-          shfmt = {
-            prepend_args = [
-              "-i"
-              "2"
-            ];
-          };
-        };
-      };
-      lazyLoad.settings = {
-        lazy = true;
-        cmd = "ConformInfo";
-        keys = [
-          {
-            __unkeyed-1 = "<leader>cF";
-            __unkeyed-2.__raw = "function() require('conform').format({ async = true }) end";
-            desc = "Format buffer";
-          }
-        ];
-        before =
-          # lua
-          ''
-            function()
-              -- If you want the formatexpr, here is the place to set it
-              vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
-            end
-          '';
-      };
-    };
-    ltex-extra = {
-      enable = true;
-      settings = {
-        load_langs = [
-          "en-US"
-          "de-DE"
-        ];
-        path.__raw =
-          # lua
-          ''
-            vim.fn.expand("state") .. "/ltex"
-          '';
-      };
-      lazyLoad.settings.ft = [
-        "markdown"
-        "tex"
-      ];
     };
   };
 }

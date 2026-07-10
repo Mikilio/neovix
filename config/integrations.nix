@@ -1,38 +1,73 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   # Dependencies for integrations plugins
   dependencies = {
-    opencode.packageFallback = true;
+    opencode.enable = false;
+    yazi.enable = false;
+    sioyek.enable = false;
   };
-
-  extraPackages = with pkgs; [
-    # vimtex LaTeX toolchain (not declared as nixvim dependencies)
-    biber # bibliography backend
-    ghostscript_headless # PDF processing for sioyek viewer
-  ];
-
-  userCommands.CC.command = "CodeCompanion";
-  extraConfigLuaPost =
-    #lua
-    ''
-      function _G.run_cmd(var)
-        local cmd = var:sub(5)
-        local handle = io.popen(cmd, "r")
-        if handle then
-          local result = handle:read("*a")
-          handle:close()
-          local r = result:gsub("%s+$", "")
-          return r
-        else
-          return nil
-        end
-      end
-
-
-    '';
 
   opts.autoread = true;
 
   plugins = {
+    dap = {
+      enable = true;
+      lazyLoad.settings.lazy = true;
+      adapters = {
+        codelldb.__raw = ''
+          function(callback, config)
+            if vim.fn.executable("codelldb") ~= 1 then
+              return
+            end
+            callback({
+              type = "server",
+              port = "''\${port}",
+              executable = {
+                command = "codelldb",
+                args = {"--port", "''\${port}"},
+              },
+            })
+          end
+        '';
+        python.__raw = ''
+          function(callback, config)
+            if vim.fn.executable("python3") ~= 1 then
+              return
+            end
+            callback({
+              type = "executable",
+              command = "python3",
+              args = {"-m", "debugpy.adapter"},
+            })
+          end
+        '';
+      };
+      configurations =
+        let
+          codelldbLaunch = {
+            type = "codelldb";
+            request = "launch";
+            name = "Launch file";
+            program.__raw = "function() return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file') end";
+            cwd = "\${workspaceFolder}";
+            stopOnEntry = false;
+          };
+        in
+        {
+          rust = [ codelldbLaunch ];
+          cpp = [ codelldbLaunch ];
+          c = [ codelldbLaunch ];
+          python = [
+            {
+              type = "python";
+              request = "launch";
+              name = "Launch file";
+              program = "\${file}";
+              pythonPath.__raw = "function() return 'python3' end";
+            }
+          ];
+        };
+    };
+
     nix-develop = {
       enable = true;
       lazyLoad.settings.cmd = [
@@ -54,7 +89,7 @@
                 function() require("opencode").ask("@this: ") end
               '';
             desc = "Ask OpenCode…";
-            mode = ["n" "x"];
+            mode = [ "n" "x" ];
           }
           {
             __unkeyed-1 = "<leader>os";
@@ -64,7 +99,7 @@
                 function() require("opencode").select() end
               '';
             desc = "Select OpenCode…";
-            mode = ["n" "x"];
+            mode = [ "n" "x" ];
           }
           {
             __unkeyed-1 = "go";
@@ -75,7 +110,7 @@
               '';
             desc = "Append range to OpenCode";
             expr = true;
-            mode = ["n" "x"];
+            mode = [ "n" "x" ];
           }
           {
             __unkeyed-1 = "goo";
@@ -131,19 +166,6 @@
       };
     };
 
-    dap = {
-      enable = true;
-      lazyLoad.settings.lazy = true;
-    };
-    dap-python = {
-      enable = true;
-      lazyLoad.settings.lazy = true;
-    };
-    dap-lldb = {
-      enable = true;
-      lazyLoad.settings.lazy = true;
-      settings.codelldb_path = pkgs.vscode-extensions.vadimcn.vscode-lldb;
-    };
     dap-virtual-text = {
       enable = true;
       lazyLoad.settings.lazy = true;
@@ -158,22 +180,6 @@
               local tg = require('lz.n').trigger_load
               tg('dap')
               tg('nvim-dap-virtual-text')
-
-              local bufnr = vim.api.nvim_get_current_buf()
-              local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
-              local lldb = { "rust", "c", "cpp" }
-              local python = { "python" }
-
-              for _, ft in ipairs(lldb) do
-                if filetype == ft then
-                  tg('dap-lldb')
-                  break
-                end
-              end
-
-              if filetype == "python" then
-                tg('dap-python')
-              end
             end
           '';
         keys = [
@@ -210,23 +216,30 @@
 
     yazi = {
       enable = true;
-      lazyLoad.settings = {
-        event = "DeferredUIEnter";
-        keys = [
-          {
-            __unkeyed-1 = "<leader>e";
-            __unkeyed-2 = "<cmd>Yazi<cr>";
-            mode = "n";
-            desc = "Open Yazi";
-          }
-        ];
-      };
+      lazyLoad.settings.keys = [
+        {
+          __unkeyed-1 = "<leader>e";
+          __unkeyed-2.__raw =
+            #lua
+            ''
+              function()
+                if vim.fn.executable("yazi") == 1 then
+                  vim.cmd("Yazi")
+                else
+                  vim.cmd("Explore")
+                end
+              end
+            '';
+          desc = "Open file manager (yazi or :Explore)";
+          mode = "n";
+        }
+      ];
     };
 
-    # we don't want to lazy load VimTeX https://github.com/lervag/vimtex#Installation
     vimtex = {
       enable = true;
-      texlivePackage = pkgs.texliveTeTeX;
+      texlivePackage = null;
+      lazyLoad.settings.ft = [ "tex" "plaintex" "latex" ];
       settings = {
         complete_enabled = false;
         parser_bib_backend = "lua";

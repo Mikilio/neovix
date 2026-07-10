@@ -1,7 +1,7 @@
 _: {
   plugins.lualine = {
     enable = true;
-    lazyLoad.settings.event = "UIEnter";
+    autoLoad = true;
     settings = {
       options = {
         globalstatus = true;
@@ -32,9 +32,9 @@ _: {
             icon = " ";
           }
         ];
-        lualine_b = [];
-        lualine_c = [];
-        lualine_x = [];
+        lualine_b = [ ];
+        lualine_c = [ ];
+        lualine_x = [ ];
         lualine_y = [
           {
             __unkeyed-1 = "windows";
@@ -71,7 +71,7 @@ _: {
           }
         ];
         lualine_b = [
-          {__unkeyed-1 = "branch";}
+          { __unkeyed-1 = "branch"; }
           {
             __unkeyed-1 = "diff";
             symbols = {
@@ -82,7 +82,7 @@ _: {
           }
           {
             __unkeyed-1 = "diagnostics";
-            sources = ["nvim_diagnostic"];
+            sources = [ "nvim_diagnostic" ];
             symbols = {
               error = " ";
               warn = " ";
@@ -102,31 +102,22 @@ _: {
               # lua
               ''
                 function()
-                  local msg = "Inactive"
-                  local buf_ft = vim.api.nvim_buf_get_option(0, "filetype")
-                  local clients = vim.lsp.get_clients()
-                  if next(clients) == nil then
-                    return msg
+                  local clients = vim.lsp.get_clients({ bufnr = 0 })
+                  if #clients == 0 then
+                    return "Inactive"
                   end
                   local t = {}
                   for _, client in ipairs(clients) do
-                    local filetypes = client.config.filetypes
-                    if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-                      t[#t + 1] = client.name
-                    end
+                    t[#t + 1] = client.name
                   end
-                  if (#t > 0)
-                  then
-                    return table.concat(t, ", ")
-                  end
-                  return msg
+                  return table.concat(t, ", ")
                 end
               '';
             icon = " LSP:";
             color.gui = "bold";
           }
         ];
-        lualine_x = [];
+        lualine_x = [ ];
         lualine_y = [
           {
             __unkeyed-1 = "filetype";

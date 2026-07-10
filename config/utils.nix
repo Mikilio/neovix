@@ -1,11 +1,11 @@
-{
-  pkgs,
-  inputs,
-  ...
+{ pkgs
+, inputs
+, ...
 }: {
   plugins = {
     persistence = {
       enable = true;
+      autoLoad = true;
       settings = {
         dir.__raw =
           # lua
@@ -15,7 +15,6 @@
         need = 1;
         branch = true;
       };
-      lazyLoad.settings.event = "DeferredUIEnter";
     };
     nvim-surround = {
       enable = true;
@@ -30,6 +29,46 @@
             __unkeyed-1 = "<leader>?";
             __unkeyed-2.__raw = "function() require('which-key').show({ global = false }) end";
             desc = "Buffer Local Keymaps (which-key)";
+          }
+        ];
+      };
+      settings = {
+        spec = [
+          {
+            __unkeyed-1 = "<leader>c";
+            group = "Code / Format";
+          }
+          {
+            __unkeyed-1 = "<leader>l";
+            group = "LSP";
+          }
+          {
+            __unkeyed-1 = "<leader>u";
+            group = "UI / Toggles";
+          }
+          {
+            __unkeyed-1 = "<leader>o";
+            group = "OpenCode";
+          }
+          {
+            __unkeyed-1 = "<leader>s";
+            group = "Snacks Picker";
+          }
+          {
+            __unkeyed-1 = "<leader>g";
+            group = "Git";
+          }
+          {
+            __unkeyed-1 = "<leader>f";
+            group = "Find Files/Buffers";
+          }
+          {
+            __unkeyed-1 = "<leader>d";
+            group = "DAP";
+          }
+          {
+            __unkeyed-1 = "<leader>b";
+            group = "Buffer Action";
           }
         ];
       };
