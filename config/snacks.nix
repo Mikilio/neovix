@@ -45,7 +45,7 @@
           # lua
           ''
             function(picker)
-              require('lz.n').trigger_load('opencode')
+              require('lz.n').trigger_load('opencode.nvim')
               local items = vim.tbl_map(function(item)
                 return item.file
                   and require("opencode").format({ path = item.file, from = item.pos, to = item.end_pos })

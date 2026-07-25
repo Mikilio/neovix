@@ -178,7 +178,7 @@
           ''
             function()
               local tg = require('lz.n').trigger_load
-              tg('dap')
+              tg('nvim-dap')
               tg('nvim-dap-virtual-text')
             end
           '';
