@@ -8,6 +8,10 @@
       url = "github:nvim-focus/focus.nvim";
       flake = false;
     };
+    herdr-nvim = {
+      url = "github:ChmaraX/herdr-nvim";
+      flake = false;
+    };
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -53,7 +57,10 @@
             ,
             }:
             let
-              exe = if binaryName != null then lib.getExe' binary binaryName else lib.getExe binary;
+              exe =
+                if binaryName != null
+                then lib.getExe' binary binaryName
+                else lib.getExe binary;
             in
             pkgs.runCommand "${name}-check" { } ''
               ${exe} --version > $out 2>&1 || ${exe} --help > $out 2>&1 || echo "Binary present: ${binary}" > $out

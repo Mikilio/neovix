@@ -1,10 +1,37 @@
-{ pkgs, ... }: {
+{ pkgs
+, inputs
+, ...
+}: {
   # Dependencies for integrations plugins
   dependencies = {
-    opencode.enable = false;
     yazi.enable = false;
     sioyek.enable = false;
   };
+
+  # herdr-nvim: code annotations (comment lines/selection, send to herdr agent).
+  # The herdr plugin half (sidebar + file picker) installs separately via
+  # `herdr plugin install ChmaraX/herdr-nvim`.
+  extraPackages = [ pkgs.herdr ];
+
+  extraPlugins = [
+    (pkgs.vimUtils.buildVimPlugin {
+      pname = "herdr-nvim";
+      version = "0.1.1";
+      src = inputs.herdr-nvim;
+    })
+  ];
+
+  plugins.lz-n.plugins = [
+    {
+      __unkeyed-1 = "herdr-nvim";
+      event = "DeferredUIEnter";
+      after.__raw =
+        # lua
+        ''
+          require("herdr-nvim").setup({})
+        '';
+    }
+  ];
 
   opts.autoread = true;
 
@@ -75,95 +102,6 @@
         "NixShell"
         "RiffShell"
       ];
-    };
-
-    opencode = {
-      enable = true;
-      lazyLoad.settings = {
-        keys = [
-          {
-            __unkeyed-1 = "<leader>oa";
-            __unkeyed-2.__raw =
-              #lua
-              ''
-                function() require("opencode").ask("@this: ") end
-              '';
-            desc = "Ask OpenCode…";
-            mode = [ "n" "x" ];
-          }
-          {
-            __unkeyed-1 = "<leader>os";
-            __unkeyed-2.__raw =
-              #lua
-              ''
-                function() require("opencode").select() end
-              '';
-            desc = "Select OpenCode…";
-            mode = [ "n" "x" ];
-          }
-          {
-            __unkeyed-1 = "go";
-            __unkeyed-2.__raw =
-              #lua
-              ''
-                function() return require("opencode").operator("@this ") end
-              '';
-            desc = "Append range to OpenCode";
-            expr = true;
-            mode = [ "n" "x" ];
-          }
-          {
-            __unkeyed-1 = "goo";
-            __unkeyed-2.__raw =
-              #lua
-              ''
-                function() return require("opencode").operator("@this ") .. "_" end
-              '';
-            desc = "Append line to OpenCode";
-            expr = true;
-
-            mode = "n";
-          }
-          {
-            __unkeyed-1 = "<S-C-u>";
-            __unkeyed-2.__raw =
-              #lua
-              ''
-                function() require("opencode").command("session.half.page.up") end
-              '';
-            desc = "Scroll OpenCode up";
-            mode = "n";
-          }
-          {
-            __unkeyed-1 = "<S-C-d>";
-            __unkeyed-2.__raw =
-              #lua
-              ''
-                function() require("opencode").command("session.half.page.down") end
-              '';
-            desc = "Scroll OpenCode down";
-            mode = "n";
-          }
-        ];
-      };
-      settings = {
-        auto_reload = false;
-        server = {
-          start.__raw =
-            #lua
-            ''
-              function()
-                vim.fn.jobstart({ "tmux", "new-window", "-d", "-n", "opencode", "-c", vim.fn.getcwd(-1, 0), "opencode", "--port" })
-              end
-            '';
-        };
-        prompts = {
-          example = {
-            description = "An example prompt configuration";
-            prompt = "Write a function that returns the factorial of a number";
-          };
-        };
-      };
     };
 
     dap-virtual-text = {

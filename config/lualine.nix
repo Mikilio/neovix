@@ -102,20 +102,6 @@ _: {
               # lua
               ''
                 function()
-                  local ok, oc = pcall(require, "opencode")
-                  if not ok then
-                    return "󱚧 "
-                  end
-                  return oc.statusline()
-                end
-              '';
-            color.gui = "bold";
-          }
-          {
-            __unkeyed-1.__raw =
-              # lua
-              ''
-                function()
                   local clients = vim.lsp.get_clients({ bufnr = 0 })
                   if #clients == 0 then
                     return "Inactive"

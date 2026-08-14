@@ -319,9 +319,6 @@
       settings = {
         keymap.preset = "super-tab";
         sources = {
-          per_filetype = {
-            opencode_ask = [ "lsp" "buffer" ];
-          };
           providers.lsp.fallbacks = [ ];
         };
       };

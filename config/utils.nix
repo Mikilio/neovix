@@ -35,6 +35,10 @@
       settings = {
         spec = [
           {
+            __unkeyed-1 = "<leader>a";
+            group = "Annotations";
+          }
+          {
             __unkeyed-1 = "<leader>c";
             group = "Code / Format";
           }
@@ -45,10 +49,6 @@
           {
             __unkeyed-1 = "<leader>u";
             group = "UI / Toggles";
-          }
-          {
-            __unkeyed-1 = "<leader>o";
-            group = "OpenCode";
           }
           {
             __unkeyed-1 = "<leader>s";

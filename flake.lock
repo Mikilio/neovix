@@ -53,6 +53,22 @@
         "type": "github"
       }
     },
+    "herdr-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1786633944,
+        "narHash": "sha256-8rauWsiFvp847ku4OCrhECQGoQUUiZdKOZtjQ2xShYg=",
+        "owner": "ChmaraX",
+        "repo": "herdr-nvim",
+        "rev": "40aadeab3cef3702ef5e05069181c7168084794f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ChmaraX",
+        "repo": "herdr-nvim",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1783279667,
@@ -108,6 +124,7 @@
       "inputs": {
         "flake-parts": "flake-parts",
         "focus": "focus",
+        "herdr-nvim": "herdr-nvim",
         "nixpkgs": [
           "nixvim",
           "nixpkgs"
