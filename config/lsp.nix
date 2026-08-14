@@ -5,19 +5,31 @@
   extraConfigLua =
     # lua
     ''
-      _G.format_buffer = function(buf)
+      _G.format_buffer = function(buf, cb)
         buf = buf or vim.api.nvim_get_current_buf()
         local path = vim.api.nvim_buf_get_name(buf)
-        local result = vim.system({"nix", "fmt", path}):wait()
-        if result.code ~= 0 then
-          vim.notify("nix fmt failed (exit " .. result.code .. "): " .. (result.stderr or ""), vim.log.levels.WARN)
-          return false
+        if path == "" then
+          if cb then
+            cb(false)
+          end
+          return
         end
-        vim.api.nvim_buf_call(buf, function()
-          vim.cmd("checktime")
+        vim.system({ "nix", "fmt", path }, function(result)
+          if result.code ~= 0 then
+            vim.notify("nix fmt failed (exit " .. result.code .. "): " .. (result.stderr or ""), vim.log.levels.WARN)
+            if cb then
+              cb(false)
+            end
+            return
+          end
+          vim.api.nvim_buf_call(buf, function()
+            vim.cmd("checktime")
+          end)
+          vim.notify("Formatted with nix fmt", vim.log.levels.INFO)
+          if cb then
+            cb(true)
+          end
         end)
-        vim.notify("Formatted with nix fmt", vim.log.levels.INFO)
-        return true
       end
     '';
 
