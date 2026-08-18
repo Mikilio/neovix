@@ -298,7 +298,7 @@
           enable = true;
           package = null;
         };
-        intelephense = {
+        phpactor = {
           enable = true;
           package = null;
         };
